@@ -519,7 +519,7 @@ hack() {
             wget -qO - https://archive.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
             echo '# Parrot Security repositories | Added by autoConf script\ndeb https://deb.parrotsec.org/parrot parrot main contrib non-free' >> /etc/apt/sources.list
             apt update
-            apt install parrot-meta-full -y
+            yes_or_no "Do you want to install Parrot Metapackages" "Installing..." "Installing" && apt install parrot-meta-full -y
             highli "The repo is added!" "done"
             
         elif [ $kali = true ]; then
@@ -541,6 +541,8 @@ hack() {
                 highli "Installing Kali repo!" "run"
                 apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED444FF07D8D0BF6
                 echo '# Kali linux repositories | Added by autoConf script\ndeb http://http.kali.org/kali kali-rolling main contrib non-free' >> /etc/apt/sources.list
+                apt update
+                yes_or_no "Do you want to install Kali Metapackages" "Installing..." "Installing" && apt install kali-menu -y
                 highli "The repo is added!" "done"
             fi
         fi

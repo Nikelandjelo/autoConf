@@ -407,7 +407,7 @@ yes_or_no() {
         read -p "$1 [y/n]: " yn
         case $yn in
             [Yy]*) echo "\n" ; highli "$yes" "run" ; return 0  ;;  
-            [Nn]*) echo "\n" ; highli "$nay: Aborted!" "err" ; return  1 ;;
+            [Nn]*) echo "\n" ; highli "$nay: Aborted!" "err" ; return 1 ;;
         esac
         echo
         highli "I need answer!!!" "err_bl"
@@ -561,7 +561,7 @@ nerd_fonts() {
             conf=false
             yes_or_no "Do you want to install $font for user $user" "Installing $font for user $user..." "Installing $font for user $user" && conf=true
             if [ $conf = true ]; then
-                if [ $(sudo -u $usr fc-list | grep $font | wc -l) =! "0" ]; then
+                if [ $(sudo -u $usr fc-list | grep $font | wc -l) -ne "0" ]; then
                     highli "$font nerd-fonts for user $usr: already installed" "found"
                 else
                     sudo -u $user mkdir -p /home/$user/.local/share/fonts

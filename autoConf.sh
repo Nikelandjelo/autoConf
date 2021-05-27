@@ -505,11 +505,12 @@ hack() {
         echo "\n\n"
         parr=false
         kali=false
-        while true; do
-            read -p "$1 [P/K]: " pk
-            case $yn in
-                [Pp]*) echo "\n" ; highli "Setting Parrot repos!" ; parr=true ; return 1  ;;  
-                [Kk]*) echo "\n" ; highli "Setting Kali repos!" "run" ; kali=true ; return  1 ;;
+        while [ $parr = false && $kali = false ];
+        do
+            read -p "Pirrot Security or Kali repo [P/K]: " pk
+            case $pk in
+                [Pp]*) echo "\n" ; highli "Setting Parrot repos!" ; parr=true ;;  
+                [Kk]*) echo "\n" ; highli "Setting Kali repos!" "run" ; kali=true ;;
             esac
             echo
             highli "I need answer!!!" "err_bl"
@@ -520,7 +521,7 @@ hack() {
             wget -qO - https://archive.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
             echo '# Parrot Security repositories | Added by autoConf script\ndeb https://deb.parrotsec.org/parrot parrot main contrib non-free' >> /etc/apt/sources.list
             apt update
-            apt install parrot-meta-full
+            apt install parrot-meta-full -y
             highli "The repo is added!" "done"
             
         elif [ $kali = true ]; then

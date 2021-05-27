@@ -35,7 +35,6 @@ obs-studio"
 
     sys_mon="\
 bpytop \
-top \
 htop \
 neofetch \
 gparted"
@@ -46,7 +45,6 @@ fail2ban \
 libpam-google-authenticator"
 
     virt="\
-vmware-ovftool \
 virtualbox \
 virt-manager \
 qemu \
@@ -57,10 +55,11 @@ docker-compose"
     prod="\
 neovim \
 nano \
+git \
 vscode \
 python \
 python2 \
-python-pip \
+python3-pip \
 unzip \
 qbittorrent \
 arduino \
@@ -68,7 +67,7 @@ blender \
 wine"
 
     in_shell="\
-nnn-nerd \
+nnn \
 zsh \
 bash \
 fish \
@@ -103,7 +102,6 @@ testssl.sh"
 
     vulns="\
 metasploit-framework \
-crackmapexec \
 exploitdb \
 openvas"
 
@@ -114,17 +112,15 @@ john \
 johnny"
 
     netwk="\
-nc \
+netcat \
 nmap \
 tcpdump \
 wireshark-qt \
 openvpn \
-openssh \
 filezilla \
 seclists \
 dbeaver \
 sqlite \
-mariadb \
 sqlmap \
 sshuttle \
 chisel \
@@ -132,11 +128,11 @@ socat"
 
     win="\
 freerdp2-x11 \
-rdesctop \
+rdesktop \
 remmina \
 empire \
 powershell \
-evil-wm"
+evilwm"
 
     osint="\
 maltego \
@@ -156,7 +152,9 @@ $sys_mon \
 $sys_sec \
 $virt \
 $prod \
-$blk_arch"
+$in_shell \
+$nvd \
+$kali_list"
     apt update
     apt install $list -y
 }
@@ -213,6 +211,7 @@ docker-compose"
     prod="\
 vi \
 gvim \
+git \
 nano \
 vscode \
 python \
@@ -316,6 +315,8 @@ $sys_mon \
 $sys_sec \
 $virt \
 $prod \
+$in_shell \
+$nvd \
 $blk_arch"
     paru -Sy
     paru -S $list --noconfirm
@@ -580,7 +581,7 @@ nerd_fonts() {
                         rm -rf Hurmit*
                         fc-cache -f -v
 
-                    elif [ $font = "ProFonts" ]; then
+                    elif [ $font = "ProFont" ]; then
                         sudo -u $user wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/ProFont.zip
                         sudo -u $user unzip ProFont.zip
                         rm -rf ProFont.zip
@@ -662,18 +663,19 @@ coppy_dot_files() {
 zsh_for_def() {
     highli "Setting ZSH as a default shell!" "run"
     depend_check "zsh" "neofetch"
-    if [ ! $(which pfetch) ]; then
-        highli "pfetch is missing!" "nfound"
-        highli "Intslling pfetch!" "run"
-        wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch -P /bin/ 
-        highli "pfetch is installed!" "done"
-    else
-        highli "pfetch is found!" "found"
-    fi
-
     for user in $(ls /home/)
     do
-        yes_or_no "Set ZSH as default shell for user $user?" "Setting ZSH as gefault shell for user $user" "Setting ZSH as gefault shell for user $user" && chsh -s /bin/zsh $(sudo -u $user whoami)
+        yes_or_no "Set ZSH as default shell for user $user?" "Setting ZSH as gefault shell for user $user" "Setting ZSH as gefault shell for user $user" && chsh -s /bin/zsh $user
+        if [ ! $(which pfetch) ]; then
+            highli "pfetch is missing!" "nfound"
+            highli "Intslling pfetch!" "run"
+            sudo -u $user wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch
+            chmod +x pfetch
+            mv pfetch /usr/bin/
+            highli "pfetch is installed!" "done"
+        else
+            highli "pfetch is found!" "found"
+        fi
     done
     highli "Done with ZSH config!" "done"
 }

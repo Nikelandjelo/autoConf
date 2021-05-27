@@ -505,15 +505,13 @@ hack() {
         echo "\n\n"
         parr=false
         kali=false
-        while [ $parr = false && $kali = false ];
+        while [ $parr = false ] && [ $kali = false ];
         do
             read -p "Pirrot Security or Kali repo [P/K]: " pk
             case $pk in
                 [Pp]*) echo "\n" ; highli "Setting Parrot repos!" ; parr=true ;;  
                 [Kk]*) echo "\n" ; highli "Setting Kali repos!" "run" ; kali=true ;;
             esac
-            echo
-            highli "I need answer!!!" "err_bl"
         done
         
         if [ $parr = true ]; then
@@ -635,8 +633,6 @@ tools_install() {
 pys_gems() {
     depend_check "ruby" "ruby-dev" "python-pip" "python3-pip"
     highli "Installing GEM and PY tools!!!" "run"
-    #gem install $(cat ./toolists/gem.list | tr "\n" " ")
-    #pip3 install -r ./toolists/py.list
     gem_list
     pip_list
     highli "GEM and PY tools are installed!!!" "done"

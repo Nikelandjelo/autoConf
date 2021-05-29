@@ -1,0 +1,56 @@
+" Line numbers
+set number
+
+" Turn on syntax highlight
+syntax on
+
+" Set system clipboard
+set clipboard+=unnamed
+vnoremap <C-c> "+y
+map <C-v> "+p
+
+" Some extras
+set noerrorbells
+set tabstop=4 softtabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set nowrap
+set smartcase
+set noswapfile
+set nobackup
+set undodir=~/.vim/undodir
+set undofile
+set incsearch
+set ruler
+set mouse=a
+set list
+
+set colorcolumn=160
+highlight ColorColumn ctermbg=1 guibg=#ff0000
+
+" Plugins (Make dir .vim and run :PlugInstall)
+call plug#begin('~/.vim/plugged')
+
+Plug 'terryma/vim-multiple-cursors'
+Plug 'preservim/nerdtree'                   " Open with :NERDTree
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'Valloric/YouCompleteMe'
+
+call plug#end()
+
+" Multiple cursors mapping
+let g:multi_cursor_use_default_mapping=0
+
+" Default mapping
+let g:multi_cursor_start_word_key      = '<C-n>'
+let g:multi_cursor_select_all_word_key = '<A-n>'
+let g:multi_cursor_start_key           = 'g<C-n>'
+let g:multi_cursor_select_all_key      = 'g<A-n>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
+
+let g:airline#extensions#tabline#enabled = 1

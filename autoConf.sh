@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #           /$$$$$$ /$$$$$$ /$$
 #          |_  $$_/|_  $$_/| $$
 # /$$$$$$$   | $$    | $$  | $$   /$$
@@ -15,9 +15,11 @@
 ##################################################################################################
 #~~~~~~~~~~~~~~~DEB-LIST~~~~~~~~~~~~~~~~~~#
 deb_list() {
+    games="\
+lutris"
+
     more="\
-discord \
-telegram-desktop
+telegram-desktop \
 snapd"
 
     browsers="\
@@ -26,6 +28,7 @@ tor \
 torbrowser-launcher"
 
     doc="\
+okular \
 flameshot \
 cherrytree \
 notion \
@@ -86,7 +89,7 @@ nvidia-opencl-icd \
 nvidia-settings \
 nvidia-smi"
 
-#~~~~~~~~~~~Kali~~~~~~~~~~~~#
+#~~~~~~~~~~~Kali/Parrot~~~~~~~~~~~~#
 
     web="\
 burpsuite \
@@ -118,13 +121,13 @@ tcpdump \
 wireshark-qt \
 openvpn \
 filezilla \
-seclists \
 dbeaver \
 sqlite \
 sqlmap \
 sshuttle \
 chisel \
 socat"
+#seclists"
 
     win="\
 freerdp2-x11 \
@@ -143,8 +146,9 @@ radare2 \
 hexedit"
 
     #~~~~~~~~~~~~~~~~#
-    kali_list="$web $vulns $pswd $netwk $win $osint $rev"
+    hack_list="$web $vulns $pswd $netwk $win $osint $rev"
     list="\
+$games \
 $more \
 $browsers \
 $doc \
@@ -154,9 +158,9 @@ $virt \
 $prod \
 $in_shell \
 $nvd \
-$kali_list"
-    apt update
-    apt install $list -y
+$hack_list"
+    apt update 2> /dev/null
+    apt install $list
 }
 
 
@@ -166,10 +170,14 @@ $kali_list"
 ##################################################################################################
 #~~~~~~~~~~~~~~~ARCH-LIST~~~~~~~~~~~~~~~~~~#
 arch_list() {
+    games="\
+steam \
+lutris"
+
     more="\
 discord \
-telegram-desktop
-snapd"
+telegram-desktop"
+#snapd"
 
     browsers="\
 brave-nightly-bin \
@@ -178,6 +186,7 @@ tor \
 torbrowser-launcher"
 
     doc="\
+okular \
 flameshot \
 cherrytree \
 xmind \
@@ -189,7 +198,6 @@ obs-studio"
 
     sys_mon="\
 bpytop \
-top \
 htop \
 neofetch \
 gparted"
@@ -200,13 +208,12 @@ fail2ban \
 libpam-google-authenticator"
 
     virt="\
-vmware-ovftool \
 virtualbox \
 virt-manager \
 qemu \
 docker \
-docker.io \
 docker-compose"
+#vmware-ovftool"
 
     prod="\
 vi \
@@ -222,8 +229,8 @@ unzip \
 qbittorrent \
 arduino \
 etcher-bin \
-blender \
-wine"
+blender"
+#wine"
 
     in_shell="\
 nnn-nerd \
@@ -236,14 +243,14 @@ tmux"
 
     nvd="\
 nvidia \
-nvidia-util \
+nvidia-utils \
 opencl-nvidia \
 nvidia-settings"
 
 #~~~~~~~~~~~Black-Arch~~~~~~~~~~~~#
 
     web="\
-burp \
+burpsuite \
 dirbuster \
 gobuster \
 curl \
@@ -257,7 +264,7 @@ testssl.sh"
     vulns="\
 metasploit \
 crackmapexec \
-exploit-db \
+exploit-db-git \
 openvas \
 nexus \
 nessus"
@@ -269,7 +276,7 @@ john \
 johnny"
 
     netwk="\
-nc \
+netcat \
 nmap \
 tcpdump \
 wireshark-qt \
@@ -289,7 +296,6 @@ socat2"
 
     win="\
 freerdp \
-rdesctop \
 remmina \
 empire \
 powershell \
@@ -308,6 +314,7 @@ hexeditor"
     #~~~~~~~~~~~~~~~~#
     blk_arch="$web $vulns $pswd $netwk $win $osint $rev"
     list="\
+$games \
 $more \
 $browsers \
 $doc \
@@ -318,8 +325,9 @@ $prod \
 $in_shell \
 $nvd \
 $blk_arch"
-    paru -Sy
-    paru -S $list --noconfirm
+    usr="$1"
+    sudo -u $usr paru -Sy --noconfirm 2> /dev/null
+    sudo -u $usr paru -S $list
 }
 
 
@@ -329,14 +337,25 @@ $blk_arch"
 ##################################################################################################
 #~~~~~~~~~~~~~~~OPENRC-LIST~~~~~~~~~~~~~~~~~~#
 artix_openrc_list() {
-    list="\
+    virt="\
 vmware-openrc \
 vmware-workstation-openrc \
-docker-openrc \
-nvidia-util-openrc \
+docker-openrc"
+
+    nvd="\
+nvidia-utils-openrc"
+
+    netwk="\
 openssh-openrc \
 mariadb-openrc"
-    paru -S $list --noconfirm
+    #~~~~~~~~~~~~~~~~#
+    list="\
+$virt \
+$nvd \
+$netwk"
+
+    usr="$1"
+    sudo -u $usr paru -S $list
 }
 
 
@@ -346,13 +365,17 @@ mariadb-openrc"
 ##################################################################################################
 #~~~~~~~~~~~~~~~GEM-LIST~~~~~~~~~~~~~~~~~~#
 gem_list() {
-    depend_check "ruby" "ruby-dev"
+    depend_check "ruby"
     list="\
 colorls \
 evil-winrm \
 cms_scanner"
     #gem update
-    gem install $list
+    for usr in $(ls /home/)
+    do
+        sudo -u $usr echo "export PATH=~/.local/share/gem/ruby/3.0.0/bin:$PATH" >> /home/$usr/.bashrc
+        sudo -u $usr gem install $list  2> /dev/null
+    done
 }
 
 
@@ -362,10 +385,15 @@ cms_scanner"
 ##################################################################################################
 #~~~~~~~~~~~~~~~PIP-LIST~~~~~~~~~~~~~~~~~~#
 pip_list() {
-    depend_check "python-pip" "python3-pip"
+    mng=$1
+    if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
+        depend_check "python-pip"
+    elif [ $mng = "apt" ]; then
+        depend_check "python3-pip"
+    fi
     list="\
 pytest"
-    pip3 install $list
+    pip3 install $list  2> /dev/null
 }
 
 
@@ -383,32 +411,32 @@ highli() {
     l="-----------"
     reset="\e[0m"
     if [ "$mode" = "err" ]; then
-        echo "\e[1;4;39;91m$l$var$l$reset"
+        echo -e "\e[1;4;39;91m$l$var$l$reset"
     elif [ "$mode" = "err_bl" ]; then
-        echo "\e[1;5;37;41m$l$var$l$reset"
+        echo -e "\e[1;5;37;41m$l$var$l$reset"
     elif [ "$mode" = "found" ]; then
-        echo "\e[1;36;45m$l$var$l$reset"
+        echo -e "\e[1;36;45m$l$var$l$reset"
     elif [ "$mode" = "nfound" ]; then
-        echo "\e[1;37;41m$l$var$l$reset"
+        echo -e "\e[1;37;41m$l$var$l$reset"
     elif [ "$mode" = "run" ]; then
-        echo "\e[1;37;42m$l$var$l$reset"
+        echo -e "\e[1;37;42m$l$var$l$reset"
     elif [ "$mode" = "done" ]; then
-        echo "\e[1;5;37;42m$l$var$l$reset"
+        echo -e "\e[1;5;37;42m$l$var$l$reset"
     fi
 }
 
 
 # Yes/No promp
 yes_or_no() {
-    echo "\n\n"
+    echo -e "\n\n"
     msg=$1
     yes=$2
     nay=$3
     while true; do
         read -p "$1 [y/n]: " yn
         case $yn in
-            [Yy]*) echo "\n" ; highli "$yes" "run" ; return 0  ;;  
-            [Nn]*) echo "\n" ; highli "$nay: Aborted!" "err" ; return 1 ;;
+            [Yy]*) echo -e "\n" ; highli "$yes" "run" ; return 0  ;;  
+            [Nn]*) echo -e "\n" ; highli "$nay: Aborted!" "err" ; return 1 ;;
         esac
         echo
         highli "I need answer!!!" "err_bl"
@@ -419,7 +447,10 @@ yes_or_no() {
 depend_check() {
     for pk in $@
     do
-        if [ ! $(which $pk) ]; then
+        if [ $pk = "python-pip" ] || [ $pk = "python3-pip" ]; then
+            pk="pip"
+        fi
+        if [ ! $(which $pk 2> /dev/null) ]; then
             highli "$pk is missing!" "nfound"
             highli "Installing $pk" "run"
             if [ $(which pacman) ]; then
@@ -438,19 +469,38 @@ depend_check() {
 # Tools not included into the apt repo
 not_in_apt() {
     #Brave Nightly
-    if [ ! $(which brave-browser-nightly) ]; then
-        apt install apt-transport-https curl
+    ins=false
+    yes_or_no "Do you want to install Brave-Nightly" "Installing..." "Installing" && ins=true
+    if [ ! $(which brave-browser-nightly 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "apt-transport-https" "curl"
         curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg \
-        https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
-        echo "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] \
-        https://brave-browser-apt-nightly.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
+https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+        echo -e "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] \
+https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources.list
         apt install brave-browser-nightly -y
     fi
 
     #Xmind
-    if [ ! $(which xmind) ]; then
+    ins=false
+    yes_or_no "Do you want to install Xmind" "Installing..." "Installing" && ins=true
+    if [ ! $(which xmind) ] && [ $ins = true ]; then
         depend_check "snapd"
         snap install xmind
+    fi
+
+    #SecLists
+    ins=false
+    yes_or_no "Do you want to install SecLists" "Installing..." "Installing" && ins=true
+    if [ ! $(ls /usr/share/seclists 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        mkdir -p /usr/share/wordlists
+        mkdir -p /usr/share/wordlists/seclists
+        wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip
+        unzip SecList.zip
+        rm -f SecList.zip
+        mv SecLists-master /usr/share/seclists
+        ln -s /usr/share/seclists/Passwords /usr/share/wordlists/seclists/Passwords
+        ln -s /usr/share/seclists/Usernames /usr/share/wordlists/seclists/Usernames
     fi
 }
 
@@ -470,17 +520,17 @@ upgrade() {
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
         highli "Upgrade is starting!!!" "run"
-        pacman -Syyu --noconfirm
-        pacman -Qdtq --noconfirm
-        pacman -Rs --noconfirm
+        pacman -Syyu --noconfirm 2> /dev/null
+        pacman -Qdtq --noconfirm 2> /dev/null
+        pacman -Rs --noconfirm 2> /dev/null
         highli "The upgrade is done!" "done"
 
     elif [ $mng = "apt" ]; then
         highli "Upgrade is starting!!!" "run"
-        apt update -y
-        apt full-upgrade -y
-        apt autoremove -y
-        apt autoclean -y
+        apt update -y 2> /dev/null
+        apt full-upgrade -y 2> /dev/null
+        apt autoremove -y 2> /dev/null
+        apt autoclean -y 2> /dev/null
         highli "The upgrade is done!" "done"
     else
         highli "Unknown package manager!!!" "err_bl"
@@ -492,7 +542,7 @@ hack() {
     mng=$1
     depend_check "wget"
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
-        if [! -f "./strap.sh" ]; then
+        if [ ! -f "./strap.sh" ]; then
             highli "Downloading strap.sh!" "done"
             wget https://blackarch.org/strap.sh
         fi
@@ -501,24 +551,25 @@ hack() {
         ./strap.sh
         pacman -Syy --noconfirm
         highli "The repo is added!" "done"
+        yes_or_no "Do you want to remove strap.sh" "Removing..." "Removing" && rm strap.sh
 
     elif [ $mng = "apt" ]; then
-        echo "\n\n"
+        echo -e "\n\n"
         parr=false
         kali=false
         while [ $parr = false ] && [ $kali = false ];
         do
             read -p "Pirrot Security or Kali repo [P/K]: " pk
             case $pk in
-                [Pp]*) echo "\n" ; highli "Setting Parrot repos!" ; parr=true ;;  
-                [Kk]*) echo "\n" ; highli "Setting Kali repos!" "run" ; kali=true ;;
+                [Pp]*) echo -e "\n" ; highli "Setting Parrot repos!" ; parr=true ;;  
+                [Kk]*) echo -e "\n" ; highli "Setting Kali repos!" "run" ; kali=true ;;
             esac
         done
         
         if [ $parr = true ]; then
             highli "Installing Parrot Security repo!" "run"
             wget -qO - https://archive.parrotsec.org/parrot/misc/parrotsec.gpg | apt-key add -
-            echo '# Parrot Security repositories | Added by autoConf script\ndeb https://deb.parrotsec.org/parrot parrot main contrib non-free' >> /etc/apt/sources.list
+            echo -e '# Parrot Security repositories | Added by autoConf script\ndeb https://deb.parrotsec.org/parrot parrot main contrib non-free' >> /etc/apt/sources.list
             apt update
             yes_or_no "Do you want to install Parrot Metapackages" "Installing..." "Installing" && apt install parrot-meta-full -y
             highli "The repo is added!" "done"
@@ -538,10 +589,11 @@ hack() {
                 chmod +x katoolin.py
                 highli "katoolin.py is starting! Close the xterm terminal when finished!" "done"
                 xterm -hold -e "python2 ./katoolin.py"
+                yes_or_no "Do you want to remove katoolin.py" "Removing..." "Removing" && rm katoolin.py
             else
                 highli "Installing Kali repo!" "run"
                 apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED444FF07D8D0BF6
-                echo '# Kali linux repositories | Added by autoConf script\ndeb http://http.kali.org/kali kali-rolling main contrib non-free' >> /etc/apt/sources.list
+                echo -e '# Kali linux repositories | Added by autoConf script\ndeb http://http.kali.org/kali kali-rolling main contrib non-free' >> /etc/apt/sources.list
                 apt update
                 yes_or_no "Do you want to install Kali Metapackages" "Installing..." "Installing" && apt install kali-menu -y
                 highli "The repo is added!" "done"
@@ -612,13 +664,24 @@ tools_install() {
             highli "PARU found!" "found"
         fi
         
+        u=""
+        while true; do
+            for usr in $(ls /home/ 2> /dev/null)
+            do
+                yes_or_no "Do you want tou run PARU as user $usr" "Running as user $usr" "$usr" && u="$usr"
+            done
+            if [[ $u == "$usr" ]]; then
+                    break
+            fi
+        done
+
         highli "Installing tools!!!" "run"
-        arch_list
+        arch_list $u
         highli "The tools are installed!" "done"
 
         if [ $mng = "artix_openrc" ]; then
             highli "Installing openrc tools!!!" "run"
-            artix_openrc_list
+            artix_openrc_list "$u"
             highli "The openrc tools are installed!" "done"
         fi
 
@@ -634,10 +697,10 @@ tools_install() {
 
 # Installing pip and gem packets
 pys_gems() {
-    depend_check "ruby" "ruby-dev" "python-pip" "python3-pip"
+    mng=$1
     highli "Installing GEM and PY tools!!!" "run"
     gem_list
-    pip_list
+    pip_list $mng
     highli "GEM and PY tools are installed!!!" "done"
 }
 
@@ -666,12 +729,12 @@ zsh_for_def() {
     for user in $(ls /home/)
     do
         yes_or_no "Set ZSH as default shell for user $user?" "Setting ZSH as gefault shell for user $user" "Setting ZSH as gefault shell for user $user" && chsh -s /bin/zsh $user
-        if [ ! $(which pfetch) ]; then
+        if [ ! $(which pfetch 2> /dev/null) ]; then
             highli "pfetch is missing!" "nfound"
             highli "Intslling pfetch!" "run"
             sudo -u $user wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch
             chmod +x pfetch
-            mv pfetch /usr/bin/
+            mv pfetch /bin/
             highli "pfetch is installed!" "done"
         else
             highli "pfetch is found!" "found"
@@ -699,20 +762,21 @@ clear
 ##################################################################################################
 #~~~~~~~~~~~~~~~~~~BEGIN~~~~~~~~~~~~~~~~~~~~~~#
 
-echo "\e[1;5;91m          )      )  (     \e[0m"
-echo "\e[1;5;91m   (   ( /(   ( /(  )\ )  \e[0m"
-echo "\e[1;5;91m   )\  )\())  )\())(()/(  \e[0m"
-echo "\e[1;5;91m (((_)((_)\  ((_)\  /(_)) \e[0m"
-echo "\e[1;5;91m  )\\e[0m\e[1;36m___\e[1;5;91m  ((\e[0m\e[1;36m_\e[1;5;91m)  \e[0m\e[1;36m_\e[1;5;91m((\e[0m\e[1;36m_\e[1;5;91m)(\e[0m\e[1;36m_\e[1;5;91m))\e[0m\e[1;36m_\e[1;5;91m| \e[0m"
-echo "\e[1;5;91m((\e[0m\e[1;36m/ __|/ _ \ | \| || |_   \e[0m"
-echo "\e[1;36m | (__| (_) || .  || __|        \e[0m"
-echo "\e[1;36m  \___|\___/ |_|\_||_|          \e[0m\n"
-echo "\e[1;96mAuthor: \e[1;7;96mnick\e[0m"
-echo "\e[1;96m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\e[0m"
-echo "\e[1;96mGitHub: https://github.com/Nikelandjelo\e[0m\n"
-echo "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that you run this script from writable directory!"
-echo "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that the /home contain only user(s) folder(s)!"
-echo "\n\n"
+echo -e "\e[1;5;91m          )      )  (     \e[0m"
+echo -e "\e[1;5;91m   (   ( /(   ( /(  )\ )  \e[0m"
+echo -e "\e[1;5;91m   )\  )\())  )\())(()/(  \e[0m"
+echo -e "\e[1;5;91m (((_)((_)\  ((_)\  /(_)) \e[0m"
+echo -e "\e[1;5;91m  )\\e[0m\e[1;36m___\e[1;5;91m  ((\e[0m\e[1;36m_\e[1;5;91m)  \e[0m\e[1;36m_\e[1;5;91m((\e[0m\e[1;36m_\e[1;5;91m)(\e[0m\e[1;36m_\e[1;5;91m))\e[0m\e[1;36m_\e[1;5;91m| \e[0m"
+echo -e "\e[1;5;91m((\e[0m\e[1;36m/ __|/ _ \ | \| || |_   \e[0m"
+echo -e "\e[1;36m | (__| (_) || .  || __|        \e[0m"
+echo -e "\e[1;36m  \___|\___/ |_|\_||_|          \e[0m\n"
+echo -e "\e[1;96mAuthor: \e[1;7;96mnick\e[0m"
+echo -e "\e[1;96m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\e[0m"
+echo -e "\e[1;96mGitHub: https://github.com/Nikelandjelo\e[0m\n"
+echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that you run this script from writable directory!"
+echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that the /home contain only user(s) folder(s)!"
+echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mIf runing on arch based, uncomment the [multilib] mirrorlist! (/etc/pacman.conf)"
+echo -e "\n\n"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
@@ -721,10 +785,10 @@ echo "\n\n"
 #~~~~~~~~~~~~~~~CHECKS~~~~~~~~~~~~~~~~~~#
 # Distro detect
 if [ -f "/etc/artix-release" ]; then
-    highli "Artix Based: $(cat /etc/artix_relese)" "found"
+    highli "Artix Based: $(cat /etc/artix-release)" "found"
     inf="artix_openrc" #artix with openrc is the best :D
 elif [ -f "/etc/arch-release" ]; then
-    highli "Arch Based: $(cat /etc/arch-relese)" "found"
+    highli "Arch Based: $(cat /etc/arch-release)" "found"
     inf="pacman"
 elif [ -f "/etc/debian_version" ]; then
     highli "Deb Based: $(cat /etc/debian_version)" "found"
@@ -740,7 +804,7 @@ fi
 #deps=("git" "pip3" "gem" "python2" "xterm" "wget" "zip")
 for dep in "git" "pip3" "gem" "python2" "xterm" "wget" "zip"
 do
-    if [ $(which $dep) ]; then
+    if [ $(which $dep 2> /dev/null) ]; then
         highli "$dep: found" "found"
     else
         highli "$dep: not found" "nfound"
@@ -815,42 +879,42 @@ yes_or_no "Do you want to set ZSH as default shell?" "ZSH will be set as a defau
 ##################################################################################################
 #~~~~~~~~~~~~~~~RUNNING-THE-CONFIRM~~~~~~~~~~~~~~~~~~#
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $up = true ]; then
     upgrade "$inf"
 else
     highli "Skipping upgrade!!!" "err"
 fi
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $repo = true ]; then
     hack "$inf"
 else
     highli "Skipping add of repo!!!" "err"
 fi
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $nerd = true ]; then
     nerd_fonts
 else
     highli "Skipping nerd-font installation!!!" "err"
 fi
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $too = true ]; then
     tools_install "$inf"
 else
     highli "Skipping tools installation!!!" "err"
 fi
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $pygem = true ]; then
-    pys_gems
+    pys_gems "$inf"
 else
     highli "Skipping tools installation!!!" "err"
 fi
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $dot_dir = true ] && [ $dot = true ]; then
     coppy_dot_files
 elif [ $dot_dir = false ]; then
@@ -859,12 +923,12 @@ else
     highli "Skipping copying the dot files!!!" "err"
 fi
 
-echo "\n\n"
+echo -e "\n\n"
 if [ $zsh_shell = true ]; then
     zsh_for_def
 else
     highli "Skipping setting ZSH as deffault shell!!!" "err"
 fi
 
-echo "\n\n\n"
+echo -e "\n\n"
 highli "All done!" "done"

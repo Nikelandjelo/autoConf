@@ -9,6 +9,50 @@
 #|__/  |__/|______/|______/|__/  \__/
 #
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+##################################################################################################
+##################################################################################################
+##################################################################################################
+#~~~~~~~~~~~~~~~NON-INTERACTIVE-FUNCS~~~~~~~~~~~~~~~~~~#
+help() {
+    echo "This is setup script."
+    echo "Author: https://github.com/Nikelandjelo"
+    echo
+    echo "It contains the following operations:"
+    echo
+    echo "Update and Upgrade"
+    echo
+    echo "Adding one of the following repos deppending on choise and distro"
+    echo "Kali, Parrot, BlackArch"
+    echo
+    echo "Installing the following nerd-fonts"
+    echo "Hack, Hermit, ProFonts"
+    echo
+    echo "Installing tools from toolists."
+    echo
+    echo "Installing PIP and GEM packages."
+    echo
+    echo "Setting a new bashrc"
+    echo
+    echo "Setting zsh as a default shell, and installing"
+    echo "oh-my-zsh, plugins, powerline10k"
+    echo
+    echo "Setting VIM, VIM plugins and new nanorc"
+    echo
+    echo
+    echo "#######################################################################"
+    echo
+    echo -e "-A , --all\t\t:\t\tRunning the all functions."
+    echo -e "-s , --shell\t\t:\t\tConfiguring the shells."
+    echo -e "-t , --text\t\t:\t\tConfiguring the text editors"
+    echo -e "-iA , --install-all\t:\t\tInstalling the tools from the tool-lists"
+    echo -e "-iG , --install-gem\t:\t\tInstalling the tools from the gem tool-lists"
+    echo -e "-iP , --install-pip\t:\t\tInstalling the tools from the pip tool-lists"
+    echo -e "-k , --kali\t\t:\t\tSetting-up Kali"
+    echo -e "-p , --parrot\t\t:\t\tSetting-up ParrotSecurity"
+    echo -e "-b , --black-arch\t:\t\tSetting-up BlackArch"
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
 ##################################################################################################
@@ -797,6 +841,16 @@ new_bash() {
         bsh=false
         yes_or_no "Do you want new bashrc for user $user" "Setting new bashrc for user $user" "Setting new bashrc for user $user" && bsh=true
         if [ $bsh = true ]; then
+            if [ ! $(which pfetch 2> /dev/null) ]; then
+                highli "pfetch is missing!" "nfound"
+                highli "Intslling pfetch!" "run"
+                sudo -u $user wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch
+                chmod +x pfetch
+                mv pfetch /bin/
+                highli "pfetch is installed!" "done"
+            else
+                highli "pfetch is found!" "found"
+            fi
             sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc
             sudo -u $user mv bashrc /home/$user/.bashrc
         fi
@@ -892,6 +946,16 @@ manual_list() {
 
     done
 }
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+##################################################################################################
+##################################################################################################
+##################################################################################################
+#~~~~~~~~~~~~~~~NON-INTERACTIVE~~~~~~~~~~~~~~~~~~#
+if [ $@ ]; then
+    help
+    exit 0
+fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################

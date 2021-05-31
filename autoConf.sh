@@ -652,18 +652,7 @@ nerd_fonts() {
 tools_install() {
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
-        depend_check "git"
-        if [ ! $(which paru) ]; then
-            highli "PARU is missing!" "err"
-            highli "Installing paru!" "run"
-            pacman -S --needed base-devel --noconfirm
-            sudo -u niik git clone https://aur.archlinux.org/paru.git
-            cd paru/ && sudo -u niik makepkg -si
-            cd .. && rm -rf ./paru
-        else
-            highli "PARU found!" "found"
-        fi
-        
+        depend_check "git"        
         u=""
         while true; do
             for usr in $(ls /home/ 2> /dev/null)
@@ -674,6 +663,16 @@ tools_install() {
                     break
             fi
         done
+        if [ ! $(which paru 2> /dev/null) ]; then
+            highli "PARU is missing!" "err"
+            highli "Installing PARU!" "run"
+            pacman -S --needed base-devel --noconfirm
+            sudo -u $u git clone https://aur.archlinux.org/paru.git
+            cd paru/ && sudo -u $u makepkg -si
+            cd .. && rm -rf ./paru
+        else
+            highli "PARU found!" "found"
+        fi
 
         highli "Installing tools!!!" "run"
         arch_list $u

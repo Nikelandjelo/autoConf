@@ -708,11 +708,11 @@ pys_gems() {
 new_bash() {
     highli "Setting new bashrc!" "run"
     bsh=false
-    yes_or_no "Do you want ne bash for root user" "Setting new bashrc for root user..." "Setting new bashrc for root user" && bsh=true
+    yes_or_no "Do you want new bash for root user" "Setting new bashrc for root user..." "Setting new bashrc for root user" && bsh=true
     if [ $bsh = true ]; then
         rm /root/.bashrc
         wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc
-        mv .bashrc /root/.bashrc
+        mv bashrc /root/.bashrc
     fi
     for user in $(ls /home/)
     do
@@ -748,10 +748,14 @@ zsh_for_def() {
             sudo -u $user sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
             sudo -u $user git clone https://github.com/zsh-users/zsh-autosuggestions /home/$user/.oh-my-zsh/custom/plugins/zsh-autosuggestions
             sudo -u $user git clone https://github.com/sukkaw/zsh-proxy.git /home/$user/.oh-my-zsh/custom/plugins/zsh-proxy
+            sudo -u $user git clone https://github.com/zsh-users/zsh-syntax-highlighting.git /home/$user/.oh-my-zsh/plugins/zsh-syntax-highlighting
             sudo -u $user git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/$user/.oh-my-zsh/custom/themes/powerlevel10k
-            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/zshrc -P /home/$user/ -O .zshrc
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/zshrc
+            sudo -u $user mv zshrc /home/$user/.zshrc
             sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/defo_p10k.zsh -P /home/$user/ -O .defo_p10k.zsh
+            sudo -u $user mv defo_p10k.zsh /home/$user/.defo_p10k.zsh
             sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bulk_p10k.zsh -P /home/$user/ -O .bulk_p10k.zsh
+            sudo -u $user mv bulk_p10k.zsh /home/$user/.bulk_p10k.zsh
         fi
     done
     highli "Done with ZSH config!" "done"
@@ -767,16 +771,17 @@ vim_and_nano() {
         depend_check "vim-gtk"
     fi
     depend_check "nano" "python3" "curl" "wget"
-    apt install build-essential cmake vim-nox python3-dev
-    apt install mono-complete golang nodejs default-jdk npm
+    apt install build-essential cmake vim-nox python3-dev mono-complete golang nodejs default-jdk npm -y
     for user in $(ls /home/)
     do
         cnf=false
         yes_or_no "Do you want to build the setup for user $user" "Building for user $user..." "Building for user $user" && cnf=true
         if [ $cnf = true ]; then
             sudo -u $user curl -fLo /home/$user/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/vimrc -P /home/$user/ -O .vimrc
-            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/nanorc -P /home/$user/ -O .nanorc
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/vimrc
+            sudo -u $user mv vimrc /home/$user/.vimrc
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/nanorc
+            sudo -u $user mv nanorc /home/$user/.nanorc
             highli "Close the xterm window after the installation!" "done"
             sudo -u $user xterm -e "vim -c ':PlugInstall'"
             sudo -u $user cd /home/$user/.vim/bundle/YouCompleteMe

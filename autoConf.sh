@@ -446,6 +446,17 @@ https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources
         apt install -f
         rm teams.deb
     fi
+
+    #Cutter
+    ins=false
+    yes_or_no "Do you want to install Cutter" "Installing..." "Installing" && ins=true
+    if [ ! $(which cutter 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        wget 'https://github.com/rizinorg/cutter/releases/download/v2.0.2/Cutter-v2.0.2-x64.Linux.appimage'
+        chmod +x Cutter*.AppImage;
+        ./Cutter*.AppImage
+        rm Cutter*.AppImage
+    fi
 }
 
 
@@ -457,9 +468,18 @@ https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources
 
 
 # Tools not included in AUR
-#not_in_aur() {
-#
-#}
+not_in_aur() {
+    #Cutter
+    ins=false
+    yes_or_no "Do you want to install Cutter" "Installing..." "Installing" && ins=true
+    if [ ! $(which cutter 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        wget 'https://github.com/rizinorg/cutter/releases/download/v2.0.2/Cutter-v2.0.2-x64.Linux.appimage'
+        chmod +x Cutter*.AppImage;
+        ./Cutter*.AppImage
+        rm Cutter*.AppImage
+    fi
+}
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -847,6 +867,32 @@ vim_and_nano() {
     done
 }
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+##################################################################################################
+##################################################################################################
+##################################################################################################
+#~~~~~~~~~~~~~~~MANUAL-CONFIG~~~~~~~~~~~~~~~~~~#
+
+# Prints a list of things that have to be configured manually
+manual_list() {
+    declare -a list=(\
+"Add keyboard layouts and shortcut for them!" \
+"Set Brave as deffault browser!" \
+"Add the chain key to Brave!" \
+"Set terminator as default terminal!" \
+"Add the ssh keys to .ssh!")
+
+    arraylength=${#list[@]}
+    echo -e "\n\n"
+    highli "Configure manually!!!" "done"
+    echo -e "\n"
+    for (( i=1; i<${arraylength}; i++ ));
+    do
+      echo -e "\e[1;5;91m[$i]\e[0m \e[1;34m${list[$i]}\e[0m"
+
+    done
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
 ##################################################################################################
@@ -877,9 +923,9 @@ echo -e "\e[1;36m  \___|\___/ |_|\_||_|          \e[0m\n"
 echo -e "\e[1;96mAuthor: \e[1;7;96mnick\e[0m"
 echo -e "\e[1;96m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\e[0m"
 echo -e "\e[1;96mGitHub: https://github.com/Nikelandjelo\e[0m\n"
-echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that you run this script from writable directory!"
-echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that the /home contain only user(s) folder(s)!"
-echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mIf runing on arch based, uncomment the [multilib] mirrorlist! (/etc/pacman.conf)"
+echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that you run this script from writable directory!\e[0m"
+echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that the /home contain only user(s) folder(s)!\e[0m"
+echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mIf runing on arch based, uncomment the [multilib] mirrorlist! (/etc/pacman.conf)\e[0m"
 echo -e "\n\n"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -1032,6 +1078,7 @@ else
     highli "Skipping setting VIM and NANO!!!" "err"
 fi
 
-
+echo -e "\n\n"
+manual_list
 echo -e "\n\n"
 highli "All done!" "done"

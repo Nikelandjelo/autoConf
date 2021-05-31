@@ -106,7 +106,8 @@ testssl.sh"
     vulns="\
 metasploit-framework \
 exploitdb \
-openvas"
+openvas \
+enum4linux"
 
     pswd="\
 hydra \
@@ -139,14 +140,17 @@ evilwm"
 
     osint="\
 maltego \
-spiderfoot"
+spiderfoot \
+theharvester"
 
     rev="\
 radare2 \
 hexedit"
 
     #~~~~~~~~~~~~~~~~#
-    hack_list="$web $vulns $pswd $netwk $win $osint $rev"
+    hack_list=""
+    yes_or_no "Do you want to install some hacking tools" "Installing..." "Installing" && \
+hack_list="$web $vulns $pswd $netwk $win $osint $rev"
     list="\
 $games \
 $more \
@@ -177,7 +181,8 @@ lutris"
 
     more="\
 discord \
-telegram-desktop"
+telegram-desktop \
+teams"
 #snapd"
 
     browsers="\
@@ -268,7 +273,8 @@ crackmapexec \
 exploit-db-git \
 openvas \
 nexus \
-nessus"
+nessus \
+enum4linux"
 
     pswd="\
 hydra \
@@ -305,7 +311,8 @@ evil-winrm"
     osint="\
 maltego \
 spiderfoot \
-shodanhat"
+shodanhat \
+theharvester"
 
     rev="\
 radare2 \
@@ -313,7 +320,9 @@ ida-free \
 hexeditor"
 
     #~~~~~~~~~~~~~~~~#
-    blk_arch="$web $vulns $pswd $netwk $win $osint $rev"
+    blk_arch=""
+    yes_or_no "Do you want to install some hacking tools" "Installing..." "Installing" && \
+blk_arch="$web $vulns $pswd $netwk $win $osint $rev"
     list="\
 $games \
 $more \
@@ -360,6 +369,99 @@ $netwk"
 }
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+##################################################################################################
+##################################################################################################
+##################################################################################################
+#~~~~~~~~~~~~~~~NOT-IN-APT~~~~~~~~~~~~~~~~~~#
+
+
+# Tools not included into the apt repo
+not_in_apt() {
+    #Brave Nightly
+    ins=false
+    yes_or_no "Do you want to install Brave-Nightly" "Installing..." "Installing" && ins=true
+    if [ ! $(which brave-browser-nightly 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "apt-transport-https" "curl"
+        curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg \
+https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+        echo -e "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] \
+https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources.list
+        apt update
+        apt install brave-browser-nightly -y
+    fi
+
+    #Xmind
+    ins=false
+    yes_or_no "Do you want to install Xmind" "Installing..." "Installing" && ins=true
+    if [ ! $(which xmind) ] && [ $ins = true ]; then
+        depend_check "snapd"
+        snap install xmind
+    fi
+
+    #SecLists
+    ins=false
+    yes_or_no "Do you want to install SecLists" "Installing..." "Installing" && ins=true
+    if [ ! $(ls /usr/share/seclists 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        mkdir -p /usr/share/wordlists
+        mkdir -p /usr/share/wordlists/seclists
+        wget https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip
+        unzip SecList.zip
+        rm -f SecList.zip
+        mv SecLists-master /usr/share/seclists
+        ln -s /usr/share/seclists/Passwords /usr/share/wordlists/seclists/Passwords
+        ln -s /usr/share/seclists/Usernames /usr/share/wordlists/seclists/Usernames
+    fi
+
+    #Discord
+    ins=false
+    yes_or_no "Do you want to install Discord" "Installing..." "Installing" && ins=true
+    if [ ! $(which discord 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        wget 'https://discord.com/api/download?platform=linux&format=deb' -O discord.deb
+        dpkg -i discord.deb
+        apt install -f
+        rm discord.deb
+    fi
+
+    #Steam
+    ins=false
+    yes_or_no "Do you want to install Steam" "Installing..." "Installing" && ins=true
+    if [ ! $(which steam 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        wget 'https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb' -O steam.deb
+        dpkg -i steam.deb
+        apt install -f
+        rm steam.deb
+    fi
+
+    #Teams
+    ins=false
+    yes_or_no "Do you want to install Microsoft Teams" "Installing..." "Installing" && ins=true
+    if [ ! $(which teams 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        wget 'https://go.microsoft.com/fwlink/p/?LinkID=2112886&clcid=0x809&culture=en-gb&country=GB' -O teams.deb
+        dpkg -i teams.deb
+        apt install -f
+        rm teams.deb
+    fi
+}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+##################################################################################################
+##################################################################################################
+##################################################################################################
+#~~~~~~~~~~~~~~~NOT-IN-AUR~~~~~~~~~~~~~~~~~~#
+
+
+# Tools not included in AUR
+#not_in_aur() {
+#
+#}
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
 ##################################################################################################
@@ -375,7 +477,9 @@ cms_scanner"
     for usr in $(ls /home/)
     do
         sudo -u $usr echo "export PATH=~/.local/share/gem/ruby/3.0.0/bin:$PATH" >> /home/$usr/.bashrc
+        sudo -u $usr echo "export PATH=~/.local/share/gem/ruby/2.7.0/bin:$PATH" >> /home/$usr/.bashrc
         sudo -u $usr gem install $list  2> /dev/null
+        gem install $list  2> /dev/null
     done
 }
 
@@ -465,64 +569,6 @@ depend_check() {
         fi
     done
 }
-
-
-# Tools not included into the apt repo
-not_in_apt() {
-    #Brave Nightly
-    ins=false
-    yes_or_no "Do you want to install Brave-Nightly" "Installing..." "Installing" && ins=true
-    if [ ! $(which brave-browser-nightly 2> /dev/null) ] && [ $ins = true ]; then
-        depend_check "apt-transport-https" "curl"
-        curl -fsSLo /usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg \
-https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
-        echo -e "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] \
-https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources.list
-        apt update
-        apt install brave-browser-nightly -y
-    fi
-
-    #Xmind
-    ins=false
-    yes_or_no "Do you want to install Xmind" "Installing..." "Installing" && ins=true
-    if [ ! $(which xmind) ] && [ $ins = true ]; then
-        depend_check "snapd"
-        snap install xmind
-    fi
-
-    #SecLists
-    ins=false
-    yes_or_no "Do you want to install SecLists" "Installing..." "Installing" && ins=true
-    if [ ! $(ls /usr/share/seclists 2> /dev/null) ] && [ $ins = true ]; then
-        depend_check "wget"
-        mkdir -p /usr/share/wordlists
-        mkdir -p /usr/share/wordlists/seclists
-        wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip
-        unzip SecList.zip
-        rm -f SecList.zip
-        mv SecLists-master /usr/share/seclists
-        ln -s /usr/share/seclists/Passwords /usr/share/wordlists/seclists/Passwords
-        ln -s /usr/share/seclists/Usernames /usr/share/wordlists/seclists/Usernames
-    fi
-
-    #Discord
-    ins=false
-    yes_or_no "Do you want to install Discord" "Installing..." "Installing" && ins=true
-    if [ ! $(which discord 2> /dev/null) ] && [ $ins = true ]; then
-        depend_check "wget"
-        wget https://discord.com/api/download?platform=linux&format=deb -O discord.deb
-        dpkg -i discord.deb
-        apt install -f
-        rm discord.deb
-    fi
-}
-
-
-# Tools not included in AUR
-#not_in_aur() {
-#
-#}
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
@@ -796,7 +842,7 @@ vim_and_nano() {
             sudo -u $user mv nanorc /home/$user/.nanorc
             highli "Close the xterm window after the installation!" "done"
             sudo -u $user xterm -e "vim -c ':PlugInstall'"
-            sudo -u $user python3 /home/$user/.vim/bundle/YouCompleteMe/install.py --all
+            sudo -u $user python3 /home/$user/.vim/plugged/YouCompleteMe/install.py --all
         fi
     done
 }

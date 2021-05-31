@@ -203,6 +203,7 @@ set --export NNN_FIFO "/tmp/nnn.fifo"
 # MORE aliases
 # some more ls aliases
 export PATH=~/.local/share/gem/ruby/3.0.0/bin:$PATH
+export PATH=~/.local/share/gem/ruby/2.7.0/bin:$PATH
 alias ls='colorls -S --group-directories-first'
 alias ll='ls -lh'
 alias la='ls -A'
@@ -241,3 +242,4 @@ export PATH="~/.config/composer/vendor/bin:$PATH"
 #----------------------------------------------------------------------------------------------------------
 GITSTATUS_LOG_LEVEL=DEBUG
 [[ ! -f ~/.defo_p10k.zsh ]] || source ~/.defo_p10k.zsh
+POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true

@@ -366,7 +366,7 @@ $netwk"
 ##################################################################################################
 #~~~~~~~~~~~~~~~GEM-LIST~~~~~~~~~~~~~~~~~~#
 gem_list() {
-    depend_check "ruby"
+    depend_check "ruby" "ruby-dev"
     list="\
 colorls \
 evil-winrm \
@@ -478,6 +478,7 @@ not_in_apt() {
 https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
         echo -e "deb [signed-by=/usr/share/keyrings/brave-browser-nightly-archive-keyring.gpg arch=amd64] \
 https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources.list
+        apt update
         apt install brave-browser-nightly -y
     fi
 
@@ -502,6 +503,17 @@ https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources
         mv SecLists-master /usr/share/seclists
         ln -s /usr/share/seclists/Passwords /usr/share/wordlists/seclists/Passwords
         ln -s /usr/share/seclists/Usernames /usr/share/wordlists/seclists/Usernames
+    fi
+
+    #Discord
+    ins=false
+    yes_or_no "Do you want to install Discord" "Installing..." "Installing" && ins=true
+    if [ ! $(which discord 2> /dev/null) ] && [ $ins = true ]; then
+        depend_check "wget"
+        wget https://discord.com/api/download?platform=linux&format=deb -O discord.deb
+        dpkg -i discord.deb
+        apt install -f
+        rm discord.deb
     fi
 }
 
@@ -728,7 +740,7 @@ new_bash() {
 # Setting ZSH as defo
 zsh_for_def() {
     highli "Setting ZSH as a default shell!" "run"
-    depend_check "zsh" "neofetch" "wget" "git"
+    depend_check "zsh" "neofetch" "wget" "git" "fortune-mod"
     for user in $(ls /home/)
     do
         if [ ! $(which pfetch 2> /dev/null) ]; then
@@ -752,9 +764,9 @@ zsh_for_def() {
             sudo -u $user git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/$user/.oh-my-zsh/custom/themes/powerlevel10k
             sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/zshrc
             sudo -u $user mv zshrc /home/$user/.zshrc
-            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/defo_p10k.zsh -P /home/$user/ -O .defo_p10k.zsh
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/defo_p10k.zsh
             sudo -u $user mv defo_p10k.zsh /home/$user/.defo_p10k.zsh
-            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bulk_p10k.zsh -P /home/$user/ -O .bulk_p10k.zsh
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bulk_p10k.zsh
             sudo -u $user mv bulk_p10k.zsh /home/$user/.bulk_p10k.zsh
         fi
     done
@@ -770,7 +782,7 @@ vim_and_nano() {
     elif [ $mng = "apt" ]; then
         depend_check "vim-gtk"
     fi
-    depend_check "nano" "python3" "curl" "wget"
+    depend_check "nano" "python3" "curl" "wget" "xterm"
     apt install build-essential cmake vim-nox python3-dev mono-complete golang nodejs default-jdk npm -y
     for user in $(ls /home/)
     do
@@ -784,8 +796,7 @@ vim_and_nano() {
             sudo -u $user mv nanorc /home/$user/.nanorc
             highli "Close the xterm window after the installation!" "done"
             sudo -u $user xterm -e "vim -c ':PlugInstall'"
-            sudo -u $user cd /home/$user/.vim/bundle/YouCompleteMe
-            sudo -u $user python3 install.py --all
+            sudo -u $user python3 /home/$user/.vim/bundle/YouCompleteMe/install.py --all
         fi
     done
 }

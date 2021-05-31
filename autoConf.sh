@@ -161,6 +161,7 @@ $nvd \
 $hack_list"
     apt update 2> /dev/null
     apt install $list
+    sudo dpkg --configure -a
 }
 
 
@@ -710,12 +711,17 @@ new_bash() {
     yes_or_no "Do you want ne bash for root user" "Setting new bashrc for root user..." "Setting new bashrc for root user" && bsh=true
     if [ $bsh = true ]; then
         rm /root/.bashrc
-        wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc -P /root/ -O .bashrc
+        wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc
+        mv .bashrc /root/.bashrc
     fi
     for user in $(ls /home/)
     do
-        yes_or_no "Do you want new bashrc for user $user" "Setting new bashrc for user $user" "Setting new bashrc for user $user" && /
-sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc -P /home/$user/ -O .bashrc
+        bsh=false
+        yes_or_no "Do you want new bashrc for user $user" "Setting new bashrc for user $user" "Setting new bashrc for user $user" && bsh=true
+        if [ $bsh = true ]; then
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc
+            sudo -u $user mv bashrc /home/$user/.bashrc
+        fi
     done
 }
 

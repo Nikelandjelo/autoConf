@@ -42,15 +42,106 @@ help() {
     echo
     echo "#######################################################################"
     echo
-    echo -e "-A , --all\t\t:\t\tRunning the all functions."
-    echo -e "-s , --shell\t\t:\t\tConfiguring the shells."
-    echo -e "-t , --text\t\t:\t\tConfiguring the text editors"
-    echo -e "-iA , --install-all\t:\t\tInstalling the tools from the tool-lists"
-    echo -e "-iG , --install-gem\t:\t\tInstalling the tools from the gem tool-lists"
-    echo -e "-iP , --install-pip\t:\t\tInstalling the tools from the pip tool-lists"
-    echo -e "-k , --kali\t\t:\t\tSetting-up Kali"
-    echo -e "-p , --parrot\t\t:\t\tSetting-up ParrotSecurity"
-    echo -e "-b , --black-arch\t:\t\tSetting-up BlackArch"
+    echo -e "-h \tPrints this menu."
+    echo -e "-A \tRunning the all functions."
+    echo -e "-s \tConfiguring the shells."
+    echo -e "-t \tConfiguring the text editors."
+    echo -e "-iA\tInstalling the tools from all tool-lists."
+    echo -e "-iG\tInstalling the tools from the gem tool-lists."
+    echo -e "-iP\tInstalling the tools from the pip tool-lists."
+    echo -e "-k \tSetting-up Kali."
+    echo -e "-p \tSetting-up ParrotSecurity."
+    echo -e "-b \tSetting-up BlackArch."
+    echo -e "-r \tAdding pen-test repo."
+}
+
+dis() {
+    if [ -f "/etc/artix-release" ]; then
+        inf="artix_openrc" #artix with openrc is the best :D
+    elif [ -f "/etc/arch-release" ]; then
+        inf="pacman"
+    elif [ -f "/etc/debian_version" ]; then
+        inf="apt"
+    else
+        highli "Unknown distro!!" "err_bl"
+        highli "Edit the script!" "err"
+        exit 0
+    fi
+    echo "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_A() {
+    root_check
+    inf=$(dis)
+    upgrade "$inf"
+    hack "$inf"
+    nerd_fonts "$inf"
+    tools_install "$inf"
+    pys_gems "$inf"
+    new_bash
+    zsh_for_def
+    vim_and_nano "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_s() {
+    root_check
+    new_bash
+    zsh_for_def
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_t() {
+    root_check
+    inf=$(dis)
+    vim_and_nano "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_iA() {
+    root_check
+    inf=$(dis)
+    tools_install "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_iG() {
+    root_check
+    inf=$(dis)
+    gem_list "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_iP() {
+    root_check
+    inf=$(dis)
+    pip_list "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_k() {
+    root_check
+    exit 1
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_p() {
+    root_check
+    exit 1
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_b() {
+    root_check
+    exit 1
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_r() {
+    root_check
+    inf=$(dis)
+    hack "$inf"
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -573,6 +664,14 @@ pytest"
 ##################################################################################################
 #~~~~~~~~~~~~~~~~FUNCS~~~~~~~~~~~~~~~~~~#
 
+# Run root check
+root_check() {
+    if [ $(id -u) -ne '0' ]; then
+        highli "Run as root!" "err_bl"
+        exit 0
+    fi
+}
+
 # Hightlghiting func
 highli() {
     var=$1
@@ -953,8 +1052,24 @@ manual_list() {
 ##################################################################################################
 #~~~~~~~~~~~~~~~NON-INTERACTIVE~~~~~~~~~~~~~~~~~~#
 if [ $@ ]; then
-    help
-    exit 0
+    opstring=":hAstiAiGiPkpbr"
+    while getopts ${opstring} arg; do
+        case ${arg} in
+            h) help ; exit 1 ;;
+            A) min_A ;;
+            s) min_s ;;
+            t) min_t ;;
+            iA) min_iA ;;
+            iG) min_iG ;;
+            iP) min_iP ;;
+            k) min_k ;;
+            p) min_p ;;
+            b) min_b ;;
+            r) min_r ;;
+            ?) echo "Unknown argument: -${OPTARG}!" ; help ; exit 2 ;;
+        esac
+    done
+    exit 1
 fi
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -964,10 +1079,7 @@ fi
 #~~~~~~~~~~~~~~~ROOT-CHECKS~~~~~~~~~~~~~~~~~~#
 
 # Run root check
-if [ $(id -u) -ne '0' ]; then
-    highli "Run as root!" "err_bl"
-    exit 0
-fi
+root_check
 
 clear
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

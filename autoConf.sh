@@ -56,7 +56,7 @@ docker.io \
 docker-compose"
 
     prod="\
-neovim \
+vim-gtk \
 nano \
 git \
 vscode \
@@ -704,31 +704,28 @@ pys_gems() {
     highli "GEM and PY tools are installed!!!" "done"
 }
 
-# Coppy dot files to home(s) dir
-coppy_dot_files() {
-    for hm in $(ls /home/)
+# New bashrc
+new_bash() {
+    highli "Setting new bashrc!" "run"
+    bsh=false
+    yes_or_no "Do you want ne bash for root user" "Setting new bashrc for root user..." "Setting new bashrc for root user" && bsh=true
+    if [ $bsh = true ]; then
+        rm /root/.bashrc
+        wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc -P /root/ -O .bashrc
+    fi
+    for user in $(ls /home/)
     do
-        coppy=false
-        yes_or_no "Do you want to coppy the dot files to /home/$hm dir" "Copying..." "Coppy to /home/$hm" && coppy=true
-        if [ $coppy = true ]; then
-            for doted in $(ls ./dot_files/)
-            do
-                cp -r ./dot_files/$doted /home/$hm/.$doted
-                chown $hm:$hm /home/$hm/.$doted
-            done
-        fi
+        yes_or_no "Do you want new bashrc for user $user" "Setting new bashrc for user $user" "Setting new bashrc for user $user" && /
+sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bashrc -P /home/$user/ -O .bashrc
     done
-    highli "Finished with copying the dot files!" "done"
 }
-
 
 # Setting ZSH as defo
 zsh_for_def() {
     highli "Setting ZSH as a default shell!" "run"
-    depend_check "zsh" "neofetch"
+    depend_check "zsh" "neofetch" "wget" "git"
     for user in $(ls /home/)
     do
-        yes_or_no "Set ZSH as default shell for user $user?" "Setting ZSH as gefault shell for user $user" "Setting ZSH as gefault shell for user $user" && chsh -s /bin/zsh $user
         if [ ! $(which pfetch 2> /dev/null) ]; then
             highli "pfetch is missing!" "nfound"
             highli "Intslling pfetch!" "run"
@@ -739,8 +736,48 @@ zsh_for_def() {
         else
             highli "pfetch is found!" "found"
         fi
+        omz=false
+        yes_or_no "Set ZSH as default shell for user $user?" "Setting ZSH as gefault shell for user $user" "Setting ZSH as gefault shell for user $user" && chsh -s /bin/zsh $user
+        yes_or_no "Do you want to setup oh-my-zsh for user $user" "Setting oh-my-zsh for user $user..." "Setting oh-my-zsh for user $user" && omz=true
+        if [ $omz = true ]; then
+            sudo -u $user sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+            sudo -u $user git clone https://github.com/zsh-users/zsh-autosuggestions /home/$user/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+            sudo -u $user git clone https://github.com/sukkaw/zsh-proxy.git /home/$user/.oh-my-zsh/custom/plugins/zsh-proxy
+            sudo -u $user git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/$user/.oh-my-zsh/custom/themes/powerlevel10k
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/zshrc -P /home/$user/ -O .zshrc
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/defo_p10k.zsh -P /home/$user/ -O .defo_p10k.zsh
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/bulk_p10k.zsh -P /home/$user/ -O .bulk_p10k.zsh
+        fi
     done
     highli "Done with ZSH config!" "done"
+}
+
+# Setting VIM and NANO
+vim_and_nano() {
+    highli "Setting VIM and NANO" "run"
+    mng=$1
+    if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
+        depend_check "gvim"
+    elif [ $mng = "apt" ]; then
+        depend_check "vim-gtk"
+    fi
+    depend_check "nano" "python3" "curl" "wget"
+    apt install build-essential cmake vim-nox python3-dev
+    apt install mono-complete golang nodejs default-jdk npm
+    for user in $(ls /home/)
+    do
+        cnf=false
+        yes_or_no "Do you want to build the setup for user $user" "Building for user $user..." "Building for user $user" && cnf=true
+        if [ $cnf = true ]; then
+            sudo -u $user curl -fLo /home/$user/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/vimrc -P /home/$user/ -O .vimrc
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/autoConf/main/dot_files/nanorc -P /home/$user/ -O .nanorc
+            highli "Close the xterm window after the installation!" "done"
+            sudo -u $user xterm -e "vim -c ':PlugInstall'"
+            sudo -u $user cd /home/$user/.vim/bundle/YouCompleteMe
+            sudo -u $user python3 install.py --all
+        fi
+    done
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -842,15 +879,6 @@ do
 done
 
 
-# Check for home files
-if [ -d "./dot_files" ]; then
-    highli "Dot files dir: found" "found"
-    dot_dir=true
-else
-    highli "Dot files dir: not found" "nfound"
-    dor_dir=false
-fi
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
 ##################################################################################################
@@ -862,16 +890,18 @@ repo=false
 nerd=false
 too=false
 pygem=false
-dot=false
+bsh=false
 zsh_shell=false
+vn=false
 
 yes_or_no "Do you want to run ugrade" "Upgrade will run!" "Update" && up=true
 yes_or_no "Do you want to include some HACKING repos ;) " "Good boyy!" ";((((" && repo=true
 yes_or_no "Do you want to install nerd-fonts (required for the zsh configuration)" "Nerd-fonts will be installed!" "Installing nerd-fonts" && nerd=true
 yes_or_no "Do you want to install the tools from the tool-lists" "The tools will be installed!" "Installing tools" && too=true
 yes_or_no "Do you want to install the tools from the py and gem tool-lists" "The tools will be installed!" "Installing tools" && pygem=true
-yes_or_no "Do you want to coppy all dot files in your home dir" "Dot files will be copied!" "Copying dot files" && dot=true
-yes_or_no "Do you want to set ZSH as default shell?" "ZSH will be set as a default shell!" "Setting ZSH as a default shell" && zsh_shell=true
+yes_or_no "Do you want new bashrc" "New bashrc will be downloaded" "New bashrc" && bsh=true
+yes_or_no "Do you want to set ZSH as default shell" "ZSH will be set as a default shell!" "Setting ZSH as a default shell" && zsh_shell=true
+yes_or_no "Do you want to setup VIM and NANO" "Setting VIM and NANO..." "Setting VIM and NANO..." && vn=true
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
@@ -915,12 +945,10 @@ else
 fi
 
 echo -e "\n\n"
-if [ $dot_dir = true ] && [ $dot = true ]; then
-    coppy_dot_files
-elif [ $dot_dir = false ]; then
-    highli "Dot files directory is missing!!!" "nfound"
+if [ $bsh = true ]; then
+    new_bash
 else
-    highli "Skipping copying the dot files!!!" "err"
+    highli "Skipping setting new bashrc!!!" "err"
 fi
 
 echo -e "\n\n"
@@ -929,6 +957,14 @@ if [ $zsh_shell = true ]; then
 else
     highli "Skipping setting ZSH as deffault shell!!!" "err"
 fi
+
+echo -e "\n\n"
+if [ $vn = true ]; then
+    vim_and_nano "$inf"
+else
+    highli "Skipping setting VIM and NANO!!!" "err"
+fi
+
 
 echo -e "\n\n"
 highli "All done!" "done"

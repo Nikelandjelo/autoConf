@@ -159,6 +159,7 @@ gobuster"
 
     gzip -d /usr/share/wordlists/rockyou.txt.gz
     vim_and_nano "$inf"
+    nerd_fonts
     zsh_for_def
 
     declare -a list=(\
@@ -203,6 +204,7 @@ gobuster"
 
     gzip -d /usr/share/wordlists/rockyou.txt.gz
     vim_and_nano "$inf"
+    nerd_fonts
     zsh_for_def
 
     mkdir -p /usr/share/wordlists

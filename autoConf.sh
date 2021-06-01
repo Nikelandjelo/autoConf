@@ -1153,7 +1153,7 @@ if [ $@ ]; then
         help
         exit 2
     fi
-    opstring=":hAuriAiGiPstkpb"
+    opstring=":hAurigpstKPB"
     while getopts ${opstring} arg; do
         case ${arg} in
             h) help ; exit 1 ;;
@@ -1162,7 +1162,7 @@ if [ $@ ]; then
             r) min_r ;;
             i) min_i ;;
             g) min_g ;;
-            p) min_y ;;
+            p) min_p ;;
             s) min_s ;;
             t) min_t ;;
             K) min_K ;;

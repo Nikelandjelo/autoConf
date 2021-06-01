@@ -552,7 +552,8 @@ theharvester"
     rev="\
 radare2 \
 ida-free \
-hexeditor"
+hexeditor \
+gdb"
 
     #~~~~~~~~~~~~~~~~#
     blk_arch=""
@@ -637,7 +638,7 @@ https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources
     #SecLists
     ins=false
     yes_or_no "Do you want to install SecLists" "Installing..." "Installing" && ins=true
-    if [ ! $(ls /usr/share/seclists 2> /dev/null) ] && [ $ins = true ]; then
+    if [ ! -d "/usr/share/seclists" ] && [ $ins = true ]; then
         depend_check "wget"
         mkdir -p /usr/share/wordlists
         mkdir -p /usr/share/wordlists/seclists
@@ -691,6 +692,22 @@ https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources
         chmod +x Cutter*.AppImage;
         ./Cutter*.AppImage
         rm Cutter*.AppImage
+    fi
+
+    #GEF for GDB
+    ins=false
+    yes_or_no "Do you want to install GEF for GDB" "Installing..." "Installing" && ins=true
+    if [ $ins = true ]; then
+        for user in $(ls /home)
+        do
+            i=false
+            yes_or_no "Do you want to install GEF for GDB for user $user" "Installing..." "Installing" && i=true
+            if [ ! -f /home/$user/.gdbinit-gef.py ] && [ $i = true ]; then
+                depend_check "wget" "gdb"
+                wget -O /home/$user/.gdbinit-gef.py -q https://github.com/hugsy/gef/raw/master/gef.py
+                echo source /home/$user/.gdbinit-gef.py >> /home/$user/.gdbinit
+            fi
+        done
     fi
 }
 
@@ -752,7 +769,12 @@ pip_list() {
         depend_check "python3-pip"
     fi
     list="\
-pytest"
+pwn \
+pytest \
+keystone-engine \
+unicorn \
+ropper \
+keystone-engine"
     pip3 install $list  2> /dev/null
 }
 

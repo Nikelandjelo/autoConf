@@ -1165,9 +1165,9 @@ if [ $@ ]; then
             p) min_y ;;
             s) min_s ;;
             t) min_t ;;
-            K) min_k ;;
-            P) min_p ;;
-            B) min_b ;;
+            K) min_K ;;
+            P) min_P ;;
+            B) min_B ;;
             \?) echo "Unknown argument: -${OPTARG}!" ; help ; exit 2 ;;
         esac
     done

@@ -44,15 +44,16 @@ help() {
     echo
     echo -e "-h \tPrints this menu."
     echo -e "-A \tRunning the all functions."
+    echo -e "-u \tRunning update and upgrade."
+    echo -e "-r \tAdding pen-test repo."
+    echo -e "-i\tInstalling the tools from all tool-lists."
+    echo -e "-g\tInstalling the tools from the gem tool-lists."
+    echo -e "-p\tInstalling the tools from the pip tool-lists."
     echo -e "-s \tConfiguring the shells."
     echo -e "-t \tConfiguring the text editors."
-    echo -e "-iA\tInstalling the tools from all tool-lists."
-    echo -e "-iG\tInstalling the tools from the gem tool-lists."
-    echo -e "-iP\tInstalling the tools from the pip tool-lists."
-    echo -e "-k \tSetting-up Kali."
-    echo -e "-p \tSetting-up ParrotSecurity."
-    echo -e "-b \tSetting-up BlackArch."
-    echo -e "-r \tAdding pen-test repo."
+    echo -e "-K \tSetting-up Kali."
+    echo -e "-P \tSetting-up ParrotSecurity."
+    echo -e "-B \tSetting-up BlackArch."
 }
 
 dis() {
@@ -85,6 +86,40 @@ min_A() {
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_u() {
+    root_check
+    inf=$(dis)
+    upgrade "$inf"
+}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_r() {
+    root_check
+    inf=$(dis)
+    hack "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_i() {
+    root_check
+    inf=$(dis)
+    tools_install "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_g() {
+    root_check
+    inf=$(dis)
+    gem_list "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_p() {
+    root_check
+    inf=$(dis)
+    pip_list "$inf"
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 min_s() {
     root_check
     new_bash
@@ -99,49 +134,110 @@ min_t() {
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_iA() {
+min_K() {
     root_check
     inf=$(dis)
-    tools_install "$inf"
-}
+    lst="\
+zsh \
+git \
+curl \
+tmux \
+terminator \
+tor \
+torbrowser-launcher \
+zaproxy \
+seclists \
+gobuster"
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_iG() {
-    root_check
-    inf=$(dis)
-    gem_list "$inf"
-}
+    passwd kali
+    apt update -y
+    apt dist-upgrade -y
+    apt full-upgrade -y
+    apt autoremove -y
+    apt autoclean -y
+    apt install -y $lst
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_iP() {
-    root_check
-    inf=$(dis)
-    pip_list "$inf"
-}
+    gzip -d /usr/share/wordlists/rockyou.txt.gz
+    vim_and_nano "$inf"
+    zsh_for_def
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_k() {
-    root_check
+    declare -a list=(\
+"Add keyboard layouts and shortcut for them!" \
+"Login FireFox" \
+"Set terminator as default terminal!" \
+"Add the ssh keys to .ssh!")
+
+    arraylength=${#list[@]}
+    echo -e "\n\n"
+    highli "Configure manually!!!" "done"
+    echo -e "\n"
+    for (( i=1; i<${arraylength}; i++ ));
+    do
+      echo -e "\e[1;5;91m[$i]\e[0m \e[1;34m${list[$i]}\e[0m"
+
+    done
+    
     exit 1
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_p() {
-    root_check
-    exit 1
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_b() {
-    root_check
-    exit 1
-}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-min_r() {
+min_P() {
     root_check
     inf=$(dis)
-    hack "$inf"
+    lst="\
+zsh \
+git \
+curl \
+tmux \
+terminator \
+zaproxy \
+gobuster"
+
+    passwd root
+    apt update -y
+    apt dist-upgrade -y
+    apt full-upgrade -y
+    apt autoremove -y
+    apt autoclean -y
+    apt install -y $lst
+
+    gzip -d /usr/share/wordlists/rockyou.txt.gz
+    vim_and_nano "$inf"
+    zsh_for_def
+
+    mkdir -p /usr/share/wordlists
+    mkdir -p /usr/share/wordlists/seclists
+    wget https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip
+    unzip SecList.zip
+    rm -f SecList.zip
+    mv SecLists-master /usr/share/seclists
+    ln -s /usr/share/seclists/Passwords /usr/share/wordlists/seclists/Passwords
+    ln -s /usr/share/seclists/Usernames /usr/share/wordlists/seclists/Usernames
+
+    declare -a list=(\
+"Add keyboard layouts and shortcut for them!" \
+"Login FireFox" \
+"Set terminator as default terminal!" \
+"Add the ssh keys to .ssh!")
+
+    arraylength=${#list[@]}
+    echo -e "\n\n"
+    highli "Configure manually!!!" "done"
+    echo -e "\n"
+    for (( i=1; i<${arraylength}; i++ ));
+    do
+      echo -e "\e[1;5;91m[$i]\e[0m \e[1;34m${list[$i]}\e[0m"
+
+    done
+
+    exit 1
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+min_B() {
+    root_check
+    pacman -Syyu
+    exit 1
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -1052,21 +1148,27 @@ manual_list() {
 ##################################################################################################
 #~~~~~~~~~~~~~~~NON-INTERACTIVE~~~~~~~~~~~~~~~~~~#
 if [ $@ ]; then
-    opstring=":hAstiAiGiPkpbr"
+    if [[ ! $@ == -* ]];then
+        echo "Unknown argument: $@!"
+        help
+        exit 2
+    fi
+    opstring=":hAuriAiGiPstkpb"
     while getopts ${opstring} arg; do
         case ${arg} in
             h) help ; exit 1 ;;
             A) min_A ;;
+            u) min_u ;;
+            r) min_r ;;
+            i) min_i ;;
+            g) min_g ;;
+            p) min_y ;;
             s) min_s ;;
             t) min_t ;;
-            iA) min_iA ;;
-            iG) min_iG ;;
-            iP) min_iP ;;
-            k) min_k ;;
-            p) min_p ;;
-            b) min_b ;;
-            r) min_r ;;
-            ?) echo "Unknown argument: -${OPTARG}!" ; help ; exit 2 ;;
+            K) min_k ;;
+            P) min_p ;;
+            B) min_b ;;
+            \?) echo "Unknown argument: -${OPTARG}!" ; help ; exit 2 ;;
         esac
     done
     exit 1

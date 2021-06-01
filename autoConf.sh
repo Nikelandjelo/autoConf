@@ -159,6 +159,7 @@ gobuster"
 
     gzip -d /usr/share/wordlists/rockyou.txt.gz
     vim_and_nano "$inf"
+    pys_gems "$inf"
     nerd_fonts
     zsh_for_def
 
@@ -204,6 +205,7 @@ gobuster"
 
     gzip -d /usr/share/wordlists/rockyou.txt.gz
     vim_and_nano "$inf"
+    pys_gems "$inf"
     nerd_fonts
     zsh_for_def
 

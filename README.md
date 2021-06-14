@@ -59,6 +59,8 @@ Arguments:
 + Download .zshrc and the powerline10k theams in dot_files dir
 + Download .vimrc and .nanorc
 + Install plugins from .vimrc  
++ Install and configure kitty terminal enumulator
++ Install and configure tmux
 
 ### Also:
 -K/P/B for custom setup for:

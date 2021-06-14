@@ -124,6 +124,8 @@ min_s() {
     root_check
     new_bash
     zsh_for_def
+    kitty
+    tmux
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -254,6 +256,7 @@ deb_list() {
 lutris"
 
     more="\
+nextcloud \
 telegram-desktop \
 snapd"
 
@@ -311,6 +314,8 @@ bash \
 fish \
 yakuake \
 terminator \
+kitty \
+powerline \
 tmux"
 
     nvd="\
@@ -415,6 +420,7 @@ steam \
 lutris"
 
     more="\
+nextcloud \
 discord \
 telegram-desktop \
 teams"
@@ -480,6 +486,8 @@ bash \
 fish \
 yakuake \
 terminator \
+kitty \
+powerline \
 tmux"
 
     nvd="\
@@ -1137,7 +1145,41 @@ vim_and_nano() {
             sudo -u $user mv nanorc /home/$user/.nanorc
             highli "Close the xterm window after the installation!" "done"
             sudo -u $user xterm -e "vim -c ':PlugInstall'"
-            sudo -u $user python3 /home/$user/.vim/plugged/YouCompleteMe/install.py --all
+            sudo -u $user cd /home/$user/.vim/plugged/YouCompleteMe/
+            sudo -u $user ./install.py --all
+            sudo -u $user ./install.py --clang-completer
+        fi
+    done
+}
+
+# Setting kitty
+kitty() {
+    highli "Setting kitty" "run"
+    depend_check "kitty"
+    for user in $(ls /home/)
+    do
+        cnf=false
+        yes_or_no "Do you want to build the setup for user $user" "Building for user $user..." "Building for user $user" && cnf=true
+        if [ $cnf = true ]; then
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/kitty.conf
+            sudo -u $user mv kitty.conf /home/$user/.config/kitty/
+        fi
+    done
+}
+
+# Setting tmux
+tmux() {
+    highli "Setting tmux" "run"
+    depend_check "tmux"
+    for user in $(ls /home/)
+    do
+        cnf=false
+        yes_or_no "Do you want to build the setup for user $user" "Building for user $user..." "Building for user $user" && cnf=true
+        if [ $cnf = true ]; then
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/tmux.conf
+            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/tmux.conf.local
+            sudo -u $user mv tmux.conf /home/$user/.tmux.conf
+            sudo -u $user mv tmux.conf.local /home/$user/.tmux.conf.local
         fi
     done
 }
@@ -1154,8 +1196,9 @@ manual_list() {
 "Add keyboard layouts and shortcut for them!" \
 "Set Brave as deffault browser!" \
 "Add the chain key to Brave!" \
-"Set terminator as default terminal!" \
-"Add the ssh keys to .ssh!")
+"Set kitty as default terminal!" \
+"Add the ssh keys to .ssh!" \
+"Set shortcuts!")
 
     arraylength=${#list[@]}
     echo -e "\n\n"
@@ -1310,6 +1353,8 @@ pygem=false
 bsh=false
 zsh_shell=false
 vn=false
+kt=false
+tx=false
 
 yes_or_no "Do you want to run ugrade" "Upgrade will run!" "Update" && up=true
 yes_or_no "Do you want to include some HACKING repos ;) " "Good boyy!" ";((((" && repo=true
@@ -1319,6 +1364,8 @@ yes_or_no "Do you want to install the tools from the py and gem tool-lists" "The
 yes_or_no "Do you want new bashrc" "New bashrc will be downloaded" "New bashrc" && bsh=true
 yes_or_no "Do you want to set ZSH as default shell" "ZSH will be set as a default shell!" "Setting ZSH as a default shell" && zsh_shell=true
 yes_or_no "Do you want to setup VIM and NANO" "Setting VIM and NANO..." "Setting VIM and NANO..." && vn=true
+yes_or_no "Do you want to setup kitty terminal enumelator" "Setting kitty terminal enumelator..." "Setting kitty terminal enumelator..." && kt=true
+yes_or_no "Do you want to setup tmux" "Setting tmux..." "Setting tmux..." && tx=true
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ##################################################################################################
@@ -1380,6 +1427,20 @@ if [ $vn = true ]; then
     vim_and_nano "$inf"
 else
     highli "Skipping setting VIM and NANO!!!" "err"
+fi
+
+echo -e "\n\n"
+if [ $kt = true ]; then
+    kitty
+else
+    highli "Skipping setting kitty terminal enumelator!!!" "err"
+fi
+
+echo -e "\n\n"
+if [ $tx = true ]; then
+    tmux
+else
+    highli "Skipping setting tmux!!!" "err"
 fi
 
 echo -e "\n\n"

@@ -465,7 +465,7 @@ steam \
 lutris"
 
     more="\
-nextcloud \
+nextcloud-client \
 discord \
 telegram-desktop \
 teams"

@@ -148,3 +148,83 @@ vim:
 Copy                    :   Ctl+C
 Paste                   :   Ctl+V
 ```
+
+## Browser's Shrotcut Cheepsheet:
+Tabs:
+```
+Ctl+1-8                     Switch to the specified tab, counting from the left.
+Ctl+9                       Switch to the last tab.
+Ctl+Tab / Ctrl+PgUp         Switch to the next tab – in other words, the tab on the right.
+Ctl+Shift+Tab / Ctl+PgDn    Switch to the previous tab – in other words, the tab on the left.
+Ctl+W, Ctl+F4               Close the current tab.
+Ctl+Shift+T                 Reopen the last closed tab.
+Ctl+T                       Open a new tab.
+Ctl+N                       Open a new browser window.
+Alt+F4                      Close the current window.
+```
+
+Mouse Actions for Tabs:
+```
+Middle Click a Tab              Close the tab.
+Ctrl+Left Click / Middle Click  Open a link in a background tab.
+Shift+Left Click                Open a link in a new browser window.
+Ctrl+Shift+Left Click           Open a link in a foreground tab.
+```
+
+Navigation:
+```
+Alt+Left Arrow / Backspace          Back.
+Alt+Right Arrow / Shift+Backspace   Forward.
+F5 / Ctl+R                          Reload.
+Ctl+F5                              Reload and skip the cache, re-downloading the entire website.
+Escape                              Stop.
+Alt+Home                            Open homepage.
+```
+
+Zooming:
+```
+Ctl++ / Ctl+Mousewheel Up       Zoom in.
+Ctl+– / Ctl+Mousewheel Down     Zoom out.
+Ctl+0                           Default zoom level.
+F11                             Full-screen mode.
+```
+
+Scrolling:
+```
+Space / PgDn            Scroll down a frame.
+Shift+Space / PgUp      Scroll up a frame.
+Home                    Top of page.
+End                     Bottom of page.
+```
+
+Address Bar:
+```
+Ctl+L / Alt+D / F6  Focus the address bar so you can begin typing.
+Alt+Enter           Open the location in the address bar in a new tab.
+```
+
+Search:
+```
+Ctl+K or Ctl+E          Focus the browser’s built-in search box or focus the address bar if the browser doesn’t have a dedicated search box. (Ctrl+K doesn’t work in IE, Ctrl+E does.)
+Alt+Enter               Perform a search from the search box in a new tab.
+Ctl+F / F3              Open the in-page search box to search on the current page.
+Ctl+G / F3              Find the next match of the searched text on the page.
+Ctl+Shift+G / Shift+F3  Find the previous match of the searched text on the page.
+```
+
+History & Bookmarks:
+```
+Ctl+H           Open the browsing history.
+Ctl+J           Open the download history.
+Ctl+D           Bookmark the current website.
+Ctl+Shift+Del   Open the Clear Browsing History window.
+```
+
+Other Functions:
+```
+Ctl+P               Print the current page.
+Ctl+S               Save the current page to your computer.
+Ctl+O               Open a file from your computer.
+Ctl+U               Open the current page’s source code. (Not in IE.)
+F12 / Ctl+Shift+I   Open Developer Tools.
+```

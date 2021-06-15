@@ -1364,7 +1364,7 @@ yes_or_no "Do you want to install the tools from the py and gem tool-lists" "The
 yes_or_no "Do you want new bashrc" "New bashrc will be downloaded" "New bashrc" && bsh=true
 yes_or_no "Do you want to set ZSH as default shell" "ZSH will be set as a default shell!" "Setting ZSH as a default shell" && zsh_shell=true
 yes_or_no "Do you want to setup VIM and NANO" "Setting VIM and NANO..." "Setting VIM and NANO..." && vn=true
-yes_or_no "Do you want to setup kitty terminal enumelator" "Setting kitty terminal enumelator..." "Setting kitty terminal enumelator..." && kt=true
+yes_or_no "Do you want to setup kitty terminal emulator" "Setting kitty terminal emulator..." "Setting kitty terminal emulator..." && kt=true
 yes_or_no "Do you want to setup tmux" "Setting tmux..." "Setting tmux..." && tx=true
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -1433,7 +1433,7 @@ echo -e "\n\n"
 if [ $kt = true ]; then
     kitty
 else
-    highli "Skipping setting kitty terminal enumelator!!!" "err"
+    highli "Skipping setting kitty terminal emulator!!!" "err"
 fi
 
 echo -e "\n\n"

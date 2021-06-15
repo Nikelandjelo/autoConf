@@ -8,6 +8,17 @@
 #|__/  |__/|______/|______/|__/  \__/
 
 pfetch
+#tmux attach
+
+# If not running interactively, do not do anything
+[[ $- != *i* ]] && return
+# Otherwise start tmux
+[[ -z "$TMUX" ]] && exec tmux attach
+
+autoload -Uz compinit
+compinit
+# Completion for kitty
+kitty + complete setup zsh | source /dev/stdin
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -58,7 +69,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 # extra syntax-highlighting
-. /home/$(whoami)/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+. /home/*/.oh-my-zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
 ZSH_HIGHLIGHT_STYLES[default]=none
 ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=red,bold
@@ -203,7 +214,6 @@ set --export NNN_FIFO "/tmp/nnn.fifo"
 # MORE aliases
 # some more ls aliases
 export PATH=~/.local/share/gem/ruby/3.0.0/bin:$PATH
-export PATH=~/.local/share/gem/ruby/2.7.0/bin:$PATH
 alias ls='colorls -S --group-directories-first'
 alias ll='ls -lh'
 alias la='ls -A'
@@ -226,14 +236,15 @@ alias "myip"="dig +short myip.opendns.com @resolver1.opendns.com"
 alias "zsh_update"="git -C ~/.oh-my-zsh pull && git -C ~/.oh-my-zsh/custom/themes/powerlevel10k pull && git -C ~/.oh-my-zsh/custom/themes/powerlevel9k pull"
 
 # VPS
-alias "vps"="ssh USR@IP -i /PATH/KEY -p PORT"
+alias "vps"="ssh niik@138.68.175.241 -i ~/.ssh/vps-ssh-niik -p 2222"
+alias "cybersift"="ssh nick@cybersift.tech -i ~/next-niik/CyberSift/Task/ssh/nick-cyber-sift" #46.101.76.16
 
 # PROXY
 
-#export http_proxy=http://ip:port/
-#export https_proxy=http://ip:port/
-#export ftp_proxy=http://ip:port/
-#export telnet_proxy=http://ip:port/
+#export http_proxy=http://139.180.142.243:3128/
+#export https_proxy=http://139.180.142.243:3128/
+#export ftp_proxy=http://139.180.142.243:3128/
+#export telnet_proxy=http://139.180.142.243:3128/
 
 # WEB_DEV
 
@@ -242,4 +253,3 @@ export PATH="~/.config/composer/vendor/bin:$PATH"
 #----------------------------------------------------------------------------------------------------------
 GITSTATUS_LOG_LEVEL=DEBUG
 [[ ! -f ~/.defo_p10k.zsh ]] || source ~/.defo_p10k.zsh
-POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true

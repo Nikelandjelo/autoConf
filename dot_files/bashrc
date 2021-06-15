@@ -8,6 +8,12 @@
 #|__/  |__/|______/|______/|__/  \__/
 
 pfetch
+source <(kitty + complete setup bash)
+
+# If not running interactively, do not do anything
+[[ $- != *i* ]] && return
+# Otherwise start tmux
+[[ -z "$TMUX" ]] && exec tmux attach
 
 # If not running interactively, don't do anything
 case $- in
@@ -17,7 +23,6 @@ esac
 
 export PATH=\
 ~/.local/share/gem/ruby/3.0.0/bin:\
-~/.local/share/gem/ruby/2.7.0/bin:\
 ~/.local/bin:\
 /snap/bin:\
 /usr/sandbox/:\

@@ -1,4 +1,6 @@
 #!/bin/bash
+# vim:fileencoding=utf-8:ft=conf:foldmethod=marker
+#
 #           /$$$$$$ /$$$$$$ /$$
 #          |_  $$_/|_  $$_/| $$
 # /$$$$$$$   | $$    | $$  | $$   /$$
@@ -9,11 +11,8 @@
 #|__/  |__/|______/|______/|__/  \__/
 #
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~NON-INTERACTIVE-FUNCS~~~~~~~~~~~~~~~~~~#
+#: Non-interactive functions {{{
+
 help() {
     echo "This is setup script."
     echo "Author: https://github.com/Nikelandjelo"
@@ -43,12 +42,12 @@ help() {
     echo "#######################################################################"
     echo
     echo -e "-h \tPrints this menu."
-    echo -e "-A \tRunning the all functions."
+    echo -e "-A \tRunning all functions."
     echo -e "-u \tRunning update and upgrade."
     echo -e "-r \tAdding pen-test repo."
-    echo -e "-i\tInstalling the tools from all tool-lists."
-    echo -e "-g\tInstalling the tools from the gem tool-lists."
-    echo -e "-p\tInstalling the tools from the pip tool-lists."
+    echo -e "-i\tInstalling tools from all tool-lists."
+    echo -e "-g\tInstalling tools from gem tool-list."
+    echo -e "-p\tInstalling tools from pip tool-list."
     echo -e "-s \tConfiguring the shells."
     echo -e "-t \tConfiguring the text editors."
     echo -e "-K \tSetting-up Kali."
@@ -56,6 +55,7 @@ help() {
     echo -e "-B \tSetting-up BlackArch."
 }
 
+#: Distro identifier {{{
 dis() {
     if [ -f "/etc/artix-release" ]; then
         inf="artix_openrc" #artix with openrc is the best :D
@@ -71,7 +71,10 @@ dis() {
     echo "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Running all functions (-A) {{{
+
 min_A() {
     root_check
     inf=$(dis)
@@ -85,41 +88,60 @@ min_A() {
     vim_and_nano "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Running update and Upgrade (-u) {{{
+
 min_u() {
     root_check
     inf=$(dis)
     upgrade "$inf"
 }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#: }}}
+#
+#: Adding pentest repo (-r) {{{
+
 min_r() {
     root_check
     inf=$(dis)
     hack "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Installing tools from all tool-lists {{{
+
 min_i() {
     root_check
     inf=$(dis)
     tools_install "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Installing tools from gem tool-list (-g) {{{
+
 min_g() {
     root_check
     inf=$(dis)
     gem_list "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Installing tools from pip tool-list (-p) {{{
+
 min_p() {
     root_check
     inf=$(dis)
     pip_list "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Configuring the shells (-s) {{{
+
 min_s() {
     root_check
     new_bash
@@ -128,14 +150,20 @@ min_s() {
     tmux
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Configuring the text editors (-t) {{{
+
 min_t() {
     root_check
     inf=$(dis)
     vim_and_nano "$inf"
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Setting-up Kali (-K) {{{
+
 min_K() {
     root_check
     inf=$(dis)
@@ -184,7 +212,10 @@ gobuster"
     exit 1
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Setting-up ParrotOS (-P) {{{
+
 min_P() {
     root_check
     inf=$(dis)
@@ -239,19 +270,26 @@ gobuster"
     exit 1
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Setting-up Black Arch (-B) {{{
+
 min_B() {
     root_check
     pacman -Syyu
     exit 1
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~DEB-LIST~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: }}}
+
+#: Debian Based Tool List {{{
+
 deb_list() {
+
+#: Non-Hacking tools {{{
+
     games="\
 lutris"
 
@@ -329,7 +367,9 @@ nvidia-opencl-icd \
 nvidia-settings \
 nvidia-smi"
 
-#~~~~~~~~~~~Kali/Parrot~~~~~~~~~~~~#
+#: }}}
+#
+#: Hacking tools {{{
 
     web="\
 burpsuite \
@@ -387,7 +427,9 @@ theharvester"
 radare2 \
 hexedit"
 
-    #~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: List Install {{{
     hack_list=""
     yes_or_no "Do you want to install some hacking tools" "Installing..." "Installing" && \
 hack_list="$web $vulns $pswd $netwk $win $osint $rev"
@@ -408,13 +450,16 @@ $hack_list"
     sudo dpkg --configure -a
 }
 
+#: }}}
+#
+#: }}}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~ARCH-LIST~~~~~~~~~~~~~~~~~~#
+#: Arch Based Tool List {{{
+
 arch_list() {
+
+#: Non-Hacking tools {{{
+
     games="\
 steam \
 lutris"
@@ -496,7 +541,9 @@ nvidia-utils \
 opencl-nvidia \
 nvidia-settings"
 
-#~~~~~~~~~~~Black-Arch~~~~~~~~~~~~#
+#: }}}
+#
+#: Hacking tools {{{
 
     web="\
 burpsuite \
@@ -563,7 +610,10 @@ ida-free \
 hexeditor \
 gdb"
 
-    #~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: List Install {{{
+ 
     blk_arch=""
     yes_or_no "Do you want to install some hacking tools" "Installing..." "Installing" && \
 blk_arch="$web $vulns $pswd $netwk $win $osint $rev"
@@ -584,13 +634,13 @@ $blk_arch"
     sudo -u $usr paru -S $list
 }
 
+#: }}}
+#
+#: Artix (OpenRC) {{{
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~OPENRC-LIST~~~~~~~~~~~~~~~~~~#
 artix_openrc_list() {
+
+#: List {{{
     virt="\
 vmware-openrc \
 vmware-workstation-openrc \
@@ -602,7 +652,11 @@ nvidia-utils-openrc"
     netwk="\
 openssh-openrc \
 mariadb-openrc"
-    #~~~~~~~~~~~~~~~~#
+
+#: }}}
+#
+#: List Install {{{
+
     list="\
 $virt \
 $nvd \
@@ -612,15 +666,14 @@ $netwk"
     sudo -u $usr paru -S $list
 }
 
+#: }}}
+#
+#: }}}
+#
+#: }}}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~NOT-IN-APT~~~~~~~~~~~~~~~~~~#
-
-
-# Tools not included into the apt repo
+#: Additional Tools {{{
+#: Tools not included into the apt repo {{{
 not_in_apt() {
     #Brave Nightly
     ins=false
@@ -719,15 +772,10 @@ https://brave-browser-apt-nightly.s3.brave.com/ stable main" >> /etc/apt/sources
     fi
 }
 
+#: }}}
+#
+#: Tools not included in AUR {{{
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~NOT-IN-AUR~~~~~~~~~~~~~~~~~~#
-
-
-# Tools not included in AUR
 not_in_aur() {
     #Cutter
     ins=false
@@ -741,12 +789,12 @@ not_in_aur() {
     fi
 }
 
+#: }}}
+#
+#: }}}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~GEM-LIST~~~~~~~~~~~~~~~~~~#
+#: gem tool-list {{{
+
 gem_list() {
     depend_check "ruby" "ruby-dev"
     list="\
@@ -763,12 +811,10 @@ cms_scanner"
     done
 }
 
+#: }}}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~PIP-LIST~~~~~~~~~~~~~~~~~~#
+#: pip tool-list {{{
+
 pip_list() {
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
@@ -786,15 +832,11 @@ keystone-engine"
     pip3 install $list  2> /dev/null
 }
 
+#: }}}
 
+#: Extra Functions {{{
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~~FUNCS~~~~~~~~~~~~~~~~~~#
-
-# Run root check
+#: Run root check {{{
 root_check() {
     if [ $(id -u) -ne '0' ]; then
         highli "Run as root!" "err_bl"
@@ -802,7 +844,9 @@ root_check() {
     fi
 }
 
-# Hightlghiting func
+#: }}}
+#
+#: Hightlghiting func {{{
 highli() {
     var=$1
     mode=$2
@@ -823,8 +867,9 @@ highli() {
     fi
 }
 
-
-# Yes/No promp
+#: }}}
+#
+#: Yes/No promp {{{
 yes_or_no() {
     echo -e "\n\n"
     msg=$1
@@ -841,7 +886,9 @@ yes_or_no() {
     done
 }
 
-# Checking and installing dependancies
+#: }}}
+#
+#: Checking and installing dependancies {{{
 depend_check() {
     for pk in $@
     do
@@ -863,11 +910,13 @@ depend_check() {
     done
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#: }}}
+#: }}}
 
-# Upgrades
+#: Execution Functions {{{
+#
+#: Upgrades {{{
+
 upgrade() {
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
@@ -889,7 +938,10 @@ upgrade() {
     fi
 }
 
-# Installing BlackArch ParrotSec or Kali repos
+#: }}}
+#
+#: Installing BlackArch ParrotSec or Kali repos {{{
+
 hack() {
     mng=$1
     depend_check "wget"
@@ -956,7 +1008,10 @@ hack() {
     fi
 }
 
-# Installing nerd-fonts
+#: }}}
+#
+#: Installing nerd-fonts {{{
+
 nerd_fonts() {
     depend_check "zip" "wget"
     for font in "Hack" "Hurmit" "ProFont"
@@ -1000,7 +1055,10 @@ nerd_fonts() {
     highli "Nerd-fonts installed!" "done"
 }
 
-# Installing tools from tool-lists
+#: }}}
+#
+#: Installing tools from tool-lists {{{
+
 tools_install() {
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
@@ -1046,7 +1104,10 @@ tools_install() {
     fi
 }
 
-# Installing pip and gem packets
+#: }}}
+#
+#: Installing pip and gem packets {{{
+
 pys_gems() {
     mng=$1
     highli "Installing GEM and PY tools!!!" "run"
@@ -1055,7 +1116,10 @@ pys_gems() {
     highli "GEM and PY tools are installed!!!" "done"
 }
 
-# New bashrc
+#: }}}
+#
+#: New bashrc {{{
+
 new_bash() {
     highli "Setting new bashrc!" "run"
     bsh=false
@@ -1086,7 +1150,10 @@ new_bash() {
     done
 }
 
-# Setting ZSH as defo
+#: }}}
+#
+#: Setting ZSH as defo {{{
+
 zsh_for_def() {
     highli "Setting ZSH as a default shell!" "run"
     depend_check "zsh" "neofetch" "wget" "git" "fortune-mod"
@@ -1122,17 +1189,20 @@ zsh_for_def() {
     highli "Done with ZSH config!" "done"
 }
 
-# Setting VIM and NANO
+#: }}}
+#
+#: Setting VIM and NANO {{{
+
 vim_and_nano() {
     highli "Setting VIM and NANO" "run"
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
-        depend_check "gvim"
+        depend_check "gvim" "go" "mono" "jdk"
     elif [ $mng = "apt" ]; then
-        depend_check "vim-gtk"
+        depend_check "vim-gtk" "build-essential" "vim-nox" "python3-dev" "mono-complete" "golang" "default-jdk"
     fi
-    depend_check "nano" "python3" "curl" "wget" "xterm"
-    apt install build-essential cmake vim-nox python3-dev mono-complete golang nodejs default-jdk npm -y
+    depend_check "nano" "python3" "curl" "wget" "xterm" "npm" "nodejs" "cmake"
+    apt install build-essential mono-complete default-jdk
     for user in $(ls /home/)
     do
         cnf=false
@@ -1145,14 +1215,15 @@ vim_and_nano() {
             sudo -u $user mv nanorc /home/$user/.nanorc
             highli "Close the xterm window after the installation!" "done"
             sudo -u $user xterm -e "vim -c ':PlugInstall'"
-            sudo -u $user cd /home/$user/.vim/plugged/YouCompleteMe/
-            sudo -u $user ./install.py --all
-            sudo -u $user ./install.py --clang-completer
+            sudo -u $user xterm -e "cd /home/$user/.vim/plugged/YouCompleteMe/ && ./install.py --all && ./install.py --clang-completer"
         fi
     done
 }
 
-# Setting kitty
+#: }}}
+#
+#: Setting kitty {{{
+
 kitty() {
     highli "Setting kitty" "run"
     depend_check "kitty" "powerline"
@@ -1167,7 +1238,10 @@ kitty() {
     done
 }
 
-# Setting tmux
+#: }}}
+#
+#: Setting tmux {{{
+
 tmux() {
     highli "Setting tmux" "run"
     depend_check "tmux"
@@ -1184,11 +1258,11 @@ tmux() {
     done
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~MANUAL-CONFIG~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: }}}
+
+#: TODO List {{{
 
 # Prints a list of things that have to be configured manually
 manual_list() {
@@ -1211,11 +1285,10 @@ manual_list() {
     done
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~NON-INTERACTIVE~~~~~~~~~~~~~~~~~~#
+#: }}}
+
+#: Non-Interactive MAIN() {{{
+
 if [ $@ ]; then
     if [[ ! $@ == -* ]];then
         echo "Unknown argument: $@!"
@@ -1243,21 +1316,15 @@ if [ $@ ]; then
     exit 1
 fi
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~ROOT-CHECKS~~~~~~~~~~~~~~~~~~#
+#: }}}
 
-# Run root check
+#: MAIN() {{{
+#
+# Root Check
 root_check
-
 clear
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~~~~BEGIN~~~~~~~~~~~~~~~~~~~~~~#
+#
+#: Logo {{{
 
 echo -e "\e[1;5;91m          )      )  (     \e[0m"
 echo -e "\e[1;5;91m   (   ( /(   ( /(  )\ )  \e[0m"
@@ -1275,12 +1342,10 @@ echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mMake sure that the /home contain only user
 echo -e "\e[1;5;91m[!]\e[0m \e[1;4;35mIf runing on arch based, uncomment the [multilib] mirrorlist! (/etc/pacman.conf)\e[0m"
 echo -e "\n\n"
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~CHECKS~~~~~~~~~~~~~~~~~~#
-# Distro detect
+#: }}}
+#
+#: CHECKS {{{
+#: Distro detect {{{
 if [ -f "/etc/artix-release" ]; then
     highli "Artix Based: $(cat /etc/artix-release)" "found"
     inf="artix_openrc" #artix with openrc is the best :D
@@ -1296,8 +1361,9 @@ else
     exit 0
 fi
 
-
-# Checking if dependancies are installed
+#: }}}
+#
+#: Checking if dependancies are installed {{{
 #deps=("git" "pip3" "gem" "python2" "xterm" "wget" "zip")
 for dep in "git" "pip3" "gem" "python2" "xterm" "wget" "zip"
 do
@@ -1308,8 +1374,9 @@ do
     fi
 done
 
-
-# Cheking strap.sh and katoolin.py (BlackArch)
+#; }}}
+#
+#: Cheking strap.sh and katoolin.py (BlackArch) {{{
 if [ $inf = "pacman" ] || [ $inf = "artix_openrc" ]; then
     if [ -f "./strap.sh" ]; then
         highli "strap.sh: found" "found"
@@ -1324,8 +1391,9 @@ elif [ $inf = "apt" ]; then
     fi
 fi
 
-
-# Nerd-fonts check
+#: }}}
+#
+#: Nerd-fonts check {{{
 for font in "Hack" "Hurmit" "ProFont"
 do
     for usr in $(ls /home/)
@@ -1338,12 +1406,10 @@ do
     done
 done
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~CONFIRMATION-PROM~~~~~~~~~~~~~~~~~~#
+#: }}}
+#: }}}
+#
+#: Confirmation Prom {{{
 
 up=false
 repo=false
@@ -1367,11 +1433,9 @@ yes_or_no "Do you want to setup VIM and NANO" "Setting VIM and NANO..." "Setting
 yes_or_no "Do you want to setup kitty terminal emulator" "Setting kitty terminal emulator..." "Setting kitty terminal emulator..." && kt=true
 yes_or_no "Do you want to setup tmux" "Setting tmux..." "Setting tmux..." && tx=true
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-##################################################################################################
-##################################################################################################
-##################################################################################################
-#~~~~~~~~~~~~~~~RUNNING-THE-CONFIRM~~~~~~~~~~~~~~~~~~#
+#: }}}
+#
+#: Running the Confirmed operations {{{
 
 echo -e "\n\n"
 if [ $up = true ]; then
@@ -1447,3 +1511,7 @@ echo -e "\n\n"
 manual_list
 echo -e "\n\n"
 highli "All done!" "done"
+
+#: }}}
+#
+#: }}}

@@ -1155,7 +1155,7 @@ vim_and_nano() {
 # Setting kitty
 kitty() {
     highli "Setting kitty" "run"
-    depend_check "kitty"
+    depend_check "kitty" "powerline"
     for user in $(ls /home/)
     do
         cnf=false

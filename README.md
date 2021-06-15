@@ -116,7 +116,7 @@ Zoom In                 :   Meta+=
 Zoom Out                :   Meta+-
 ```
 
-#### Application Shortcuts:
+### Application Shortcuts:
 kitty:
 ```
 New Tab                 :   Ctl+Shift+T

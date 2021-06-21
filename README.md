@@ -1,7 +1,7 @@
 
 # Setup Bash Script
-![Logo](/1.png "Logo")  
-![Logo](/2.png "Logo")  
+![Logo](/screenshots/1.png "Logo")  
+![Logo](/screenshots/2.png "Logo")  
 Tested on:  
 + Ubuntu 20.x.x
 + Parrot Security

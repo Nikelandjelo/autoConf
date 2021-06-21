@@ -7,7 +7,7 @@
 #| $$  | $$ /$$$$$$ /$$$$$$| $$ \  $$
 #|__/  |__/|______/|______/|__/  \__/
 
-pfetch
+rxfetch
 source <(kitty + complete setup bash)
 
 # If not running interactively, do not do anything

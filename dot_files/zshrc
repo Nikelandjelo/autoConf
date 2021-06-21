@@ -7,7 +7,7 @@
 #| $$  | $$ /$$$$$$ /$$$$$$| $$ \  $$
 #|__/  |__/|______/|______/|__/  \__/
 
-pfetch
+rxfetch
 #tmux attach
 
 # If not running interactively, do not do anything

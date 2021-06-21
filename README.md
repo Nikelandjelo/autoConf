@@ -1,6 +1,7 @@
 
 # Setup Bash Script
-![Logo](/readme.gif "Logo")  
+![Logo](/1.png "Logo")  
+![Logo](/2.png "Logo")  
 Tested on:  
 + Ubuntu 20.x.x
 + Parrot Security

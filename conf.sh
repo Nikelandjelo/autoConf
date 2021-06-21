@@ -17,6 +17,10 @@ help() {
     echo "This is setup script."
     echo "Author: https://github.com/Nikelandjelo"
     echo
+    echo "Sources:"
+    echo "https://github.com/siduck76/NvChad"
+    echo "https://github.com/Mangeshrex/rxfetch"
+    echo
     echo "It contains the following operations:"
     echo
     echo "Update and Upgrade"
@@ -332,7 +336,7 @@ docker.io \
 docker-compose"
 
     prod="\
-vim-gtk \
+vim-gtk\
 nano \
 git \
 vscode \
@@ -346,7 +350,9 @@ blender \
 wine"
 
     in_shell="\
-nnn \
+#nnn \
+#lf \
+ranger \
 zsh \
 bash \
 fish \
@@ -509,7 +515,7 @@ docker-compose"
 
     prod="\
 vi \
-gvim \
+neovim-nightly-bin \
 git \
 nano \
 vscode \
@@ -525,7 +531,9 @@ blender"
 #wine"
 
     in_shell="\
-nnn-nerd \
+#nnn-nerd \
+#lf \
+ranger \
 zsh \
 bash \
 fish \
@@ -823,6 +831,7 @@ pip_list() {
         depend_check "python3-pip"
     fi
     list="\
+neovim \
 pwn \
 pytest \
 keystone-engine \
@@ -1134,16 +1143,31 @@ new_bash() {
         bsh=false
         yes_or_no "Do you want new bashrc for user $user" "Setting new bashrc for user $user" "Setting new bashrc for user $user" && bsh=true
         if [ $bsh = true ]; then
+            #: PFETCH {{{
+            #if [ ! $(which pfetch 2> /dev/null) ]; then
+            #    highli "pfetch is missing!" "nfound"
+            #    highli "Intslling pfetch!" "run"
+            #    sudo -u $user wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch
+            #    chmod +x pfetch
+            #    mv pfetch /bin/
+            #    highli "pfetch is installed!" "done"
+            #else
+            #    highli "pfetch is found!" "found"
+            #fi
+            #: }}}
+            #
+            #: RXFETCH {{{
             if [ ! $(which pfetch 2> /dev/null) ]; then
-                highli "pfetch is missing!" "nfound"
-                highli "Intslling pfetch!" "run"
-                sudo -u $user wget https://raw.githubusercontent.com/dylanaraps/pfetch/master/pfetch
-                chmod +x pfetch
-                mv pfetch /bin/
-                highli "pfetch is installed!" "done"
+                highli "rxfetch is missing!" "nfound"
+                highli "Intslling rxfetch!" "run"
+                sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/src/rxfetch
+                chmod +x rxfetch
+                mv rxfetch /bin/
+                highli "rxfetch is installed!" "done"
             else
-                highli "pfetch is found!" "found"
+                highli "rxfetch is found!" "found"
             fi
+            #: }}}
             sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/bashrc
             sudo -u $user mv bashrc /home/$user/.bashrc
         fi
@@ -1194,28 +1218,36 @@ zsh_for_def() {
 #: Setting VIM and NANO {{{
 
 vim_and_nano() {
-    highli "Setting VIM and NANO" "run"
+    highli "Setting NVIM and NANO" "run"
     mng=$1
     if [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
-        depend_check "gvim" "go" "mono" "jdk"
+        #depend_check "gvim" "go" "mono" "jdk"
+        depend_check "neovim-nightly-bin"
     elif [ $mng = "apt" ]; then
-        depend_check "vim-gtk" "build-essential" "vim-nox" "python3-dev" "mono-complete" "golang" "default-jdk"
+        #depend_check "vim-gtk" "build-essential" "vim-nox" "python3-dev" "mono-complete" "golang" "default-jdk"
+        depend_check "vim-gtk"
     fi
-    depend_check "nano" "python3" "curl" "wget" "xterm" "npm" "nodejs" "cmake"
-    apt install build-essential mono-complete default-jdk
+    depend_check "nano" "python3" "curl" "wget" "xterm" "npm" "cmake" "xclip" "nano"
     for user in $(ls /home/)
     do
         cnf=false
         yes_or_no "Do you want to build the setup for user $user" "Building for user $user..." "Building for user $user" && cnf=true
         if [ $cnf = true ]; then
-            sudo -u $user curl -fLo /home/$user/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/vimrc
-            sudo -u $user mv vimrc /home/$user/.vimrc
             sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/nanorc
             sudo -u $user mv nanorc /home/$user/.nanorc
-            highli "Close the xterm window after the installation!" "done"
-            sudo -u $user xterm -e "vim -c ':PlugInstall'"
-            sudo -u $user xterm -e "cd /home/$user/.vim/plugged/YouCompleteMe/ && ./install.py --all && ./install.py --clang-completer"
+            if [ $mng = "apt" ]; then
+                sudo -u $user curl -fLo /home/$user/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+                sudo -u $user wget https://raw.githubusercontent.com/Nikelandjelo/setup-repo/main/dot_files/vimrc
+                sudo -u $user mv vimrc /home/$user/.vimrc
+                highli "Close the xterm window after the installation!" "done"
+                sudo -u $user xterm -e "vim -c ':PlugInstall'"
+                sudo -u $user xterm -e "cd /home/$user/.vim/plugged/YouCompleteMe/ && ./install.py --all && ./install.py --clang-completer"
+            elif [ $mng = "pacman" ] || [ $mng = "artix_openrc" ]; then
+                sudo -u $user git clone https://github.com/siduck76/NvChad.git
+                cd NvChad && sudo -u $user ./install.sh
+                cd ..
+                rm -rf NvChad
+            fi
         fi
     done
 }
@@ -1429,7 +1461,7 @@ yes_or_no "Do you want to install the tools from the tool-lists" "The tools will
 yes_or_no "Do you want to install the tools from the py and gem tool-lists" "The tools will be installed!" "Installing tools" && pygem=true
 yes_or_no "Do you want new bashrc" "New bashrc will be downloaded" "New bashrc" && bsh=true
 yes_or_no "Do you want to set ZSH as default shell" "ZSH will be set as a default shell!" "Setting ZSH as a default shell" && zsh_shell=true
-yes_or_no "Do you want to setup VIM and NANO" "Setting VIM and NANO..." "Setting VIM and NANO..." && vn=true
+yes_or_no "Do you want to setup VIM and NANO" "Setting NVIM and NANO..." "Setting VIM and NANO..." && vn=true
 yes_or_no "Do you want to setup kitty terminal emulator" "Setting kitty terminal emulator..." "Setting kitty terminal emulator..." && kt=true
 yes_or_no "Do you want to setup tmux" "Setting tmux..." "Setting tmux..." && tx=true
 

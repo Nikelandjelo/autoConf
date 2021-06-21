@@ -143,6 +143,40 @@ Right Pain              :   Ctl+Right
 Down Pain               :   Ctl+Down
 ```
 
+nvim (Leader key = Space): (Source: https://github.com/siduck76/NvChad/wiki/mappings)
+```
+Ctl+l                   :    Open terminal vertically over right
+Ctl+x                   :    Open terminal horizontally below the current window
+Ctl+n                   :    toggle neovim tree
+Shift+h:                :    show hidden files (use these keybinds when cursor's in the filetree, same for the keybinds below).
+Ctl+v                   :    open files in vertical split
+Ctl+x                   :    open files in horizontal split
+leader+n                :    toggle line number
+leader+z                :    toggle truezen.nvim's Ataraxis mode
+leader+m                :    toggle truezen.nvim's minimalistic mode
+Ctl+a                   :    copies everything in the current file
+select any text + y     :    copies the selected text
+leader+fb               :    open all buffers
+leader+ff               :    find files in the current DIR
+leader+fo               :    open recently edited files
+leader+fh               :    opens up a help page like thing
+Ctl+v                   :    open files in vertical split
+Ctl+x                   :    open files in horizontal split
+leader+fm               : formats or beautifies the code in current window via neoformat (currently only html ,css , js can be formatted . To be able to use this keybind you need to install the formatter locally for your language , in my case prettier was required only so I installed it. check this.
+<C-u>, <C-d>, <C-b>, <C-f>, <C-y> and <C-e> : Smooth scrolling for window movement commands.
+TAB or Shift TAB cycle through opened tabs
+Shift+x                 :   close current tab
+Shift+t                 :   open new tab
+K                       :   hover and show the definition
+gd                      :   jumps to the definition (works for user and language definitions)
+[d                      :   jumps to the previous error
+]d                      :   jumps to the next error
+leader+D                :   jumps to the definition
+leader+wq               :   list all the errors in a new buffer
+leader+rn               :   rename all instances of this definition (user functions and declaration)
+leader+/                :   toggle
+```
+
 vim:
 ```
 Copy                    :   Ctl+C

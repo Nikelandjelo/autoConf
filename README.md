@@ -16,6 +16,9 @@ Tested on:
 + Arch
 + Artix (OpenRC)  
   
+## GRUB Themes:  
+https://store.kde.org/p/1414997/
+  
 ## Installation
 git:  
 `git clone https://github.com/Nikelandjelo/autoConf.git`  

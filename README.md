@@ -1,5 +1,5 @@
 # Setup Bash Script
-Sources:
+Sources:  
 nvim source: https://github.com/siduck76/NvChad  
 rxfetch source: https://github.com/Mangeshrex/rxfetch  
 tmux source: https://github.com/gpakosz/.tmux  

@@ -301,6 +301,7 @@ deb_list() {
 lutris"
 
     more="\
+grub-customizer \
 nextcloud \
 telegram-desktop \
 snapd"
@@ -474,6 +475,7 @@ steam \
 lutris"
 
     more="\
+grub-customizer \
 nextcloud-client \
 discord \
 telegram-desktop \

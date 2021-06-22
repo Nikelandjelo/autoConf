@@ -1,12 +1,14 @@
-# Setup Bash Script
+# Setup Bash Script  
+![Logo](/screenshots/1.png "Logo")  
+![Logo](/screenshots/2.png "Logo")  
+  
 Sources:  
 nvim source: https://github.com/siduck76/NvChad  
 rxfetch source: https://github.com/Mangeshrex/rxfetch  
 tmux source: https://github.com/gpakosz/.tmux  
 oh-my-zsh: https://github.com/ohmyzsh/ohmyzsh  
 powerline10k: https://github.com/romkatv/powerlevel10k  
-![Logo](/screenshots/1.png "Logo")  
-![Logo](/screenshots/2.png "Logo")  
+
 Tested on:  
 + Ubuntu 20.x.x
 + Parrot Security

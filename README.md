@@ -8,6 +8,12 @@ rxfetch source: https://github.com/Mangeshrex/rxfetch
 tmux source: https://github.com/gpakosz/.tmux  
 oh-my-zsh: https://github.com/ohmyzsh/ohmyzsh  
 powerline10k: https://github.com/romkatv/powerlevel10k  
+  
+GRUB Themes:  
+https://store.kde.org/p/1414997/  
+https://store.kde.org/p/1484567/  
+https://store.kde.org/p/1429443/  
+https://store.kde.org/p/1420727/  
 
 Tested on:  
 + Ubuntu 20.x.x
@@ -15,12 +21,6 @@ Tested on:
 + Kali Linux
 + Arch
 + Artix (OpenRC)  
-  
-## GRUB Themes:  
-https://store.kde.org/p/1414997/  
-https://store.kde.org/p/1484567/  
-https://store.kde.org/p/1429443/  
-https://store.kde.org/p/1420727/  
   
 ## Installation
 git:  

@@ -17,10 +17,10 @@ Tested on:
 + Artix (OpenRC)  
   
 ## GRUB Themes:  
-https://store.kde.org/p/1414997/
-https://store.kde.org/p/1484567/
-https://store.kde.org/p/1429443/
-https://store.kde.org/p/1420727/
+https://store.kde.org/p/1414997/  
+https://store.kde.org/p/1484567/  
+https://store.kde.org/p/1429443/  
+https://store.kde.org/p/1420727/  
   
 ## Installation
 git:  
